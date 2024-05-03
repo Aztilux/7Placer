@@ -1,7 +1,7 @@
-import Bot from "../../bot/Bot";
 import Canvas from "../Canvas";
+import Bot from "../../bot/Bot";
 
-function CanvasImgToArray(canvas: Canvas) {
+function CanvasImgToArray(canvas: Canvas): Array<string> {
 
   const cloadercode = `
   const canvasworkerTimet = performance.now();
@@ -34,7 +34,7 @@ function CanvasImgToArray(canvas: Canvas) {
               const a = pixelData[pixelIndex + 3];
   
               if (a < 1) {
-                  continue; // Skip transparent pixels
+                  continue; // awa
               }
   
               const r = pixelData[pixelIndex];
@@ -60,15 +60,16 @@ const cloaderblob = new Blob([cloadercode], {
 const canvasworker = new Worker( URL.createObjectURL(cloaderblob) );
 
 canvasworker.onmessage = function(event) {
-  if (Array.isArray(event.data)) {
-  var CanvasArray = event.data;
+  if (Array.isArray(event.data)) {  
+  const CanvasArray: any[] = event.data
+  console.log(CanvasArray)
+  canvas.SCanvasArray = CanvasArray
   }
   else {
     console.log(`Processing took: ${Math.round(event.data)}ms`);
   }
-  return CanvasArray
 };
-canvasworker.postMessage(canvas.ID);
+  canvasworker.postMessage(canvas.GID);
 }
 
 export default CanvasImgToArray
