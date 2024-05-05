@@ -1,7 +1,6 @@
-import Canvas from "../../canvas/Canvas";
 import Bot from "../Bot";
 
-function onmessage(event: any, bot: Bot) {
+  function onmessage(event: any, bot: Bot) {
   const msg = event.data
   if (msg.startsWith("42")) {
     const msg = JSON.parse(event.data.substr(2))
@@ -9,11 +8,12 @@ function onmessage(event: any, bot: Bot) {
     if (type == "p") {
       const pixelsReceived = msg[1]
       for (const pixel of pixelsReceived) {
+        const Canvas = bot.canvas
         const x = pixel[0]
         const y = pixel[1]
         const color = pixel[2]
         const id = pixel[4]  
-        bot.canvas.UpdatePixel(x, y, color)
+        Canvas.UpdatePixel(x, y, color)
       }
     }
   }

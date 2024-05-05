@@ -1,8 +1,9 @@
 import Canvas from "../Canvas";
 import Bot from "../../bot/Bot";
 
-function CanvasImgToArray(canvas: Canvas): Array<string> {
+function CanvasImgToArray(canvas: Canvas) {
 
+  console.log(canvas)
   const cloadercode = `
   const canvasworkerTimet = performance.now();
   const colors = [
@@ -62,8 +63,8 @@ const canvasworker = new Worker( URL.createObjectURL(cloaderblob) );
 canvasworker.onmessage = function(event) {
   if (Array.isArray(event.data)) {  
   const CanvasArray: any[] = event.data
-  console.log(CanvasArray)
   canvas.SCanvasArray = CanvasArray
+  return CanvasArray
   }
   else {
     console.log(`Processing took: ${Math.round(event.data)}ms`);

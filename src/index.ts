@@ -1,5 +1,6 @@
 import Canvas from './canvas/Canvas'
 import Bot from './bot/Bot'
+import "./plguin"
 
 Object.defineProperty(window.console, 'log', {
   configurable: false,

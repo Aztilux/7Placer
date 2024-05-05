@@ -2,14 +2,14 @@ import Bot from "../bot/Bot";
 import CanvasImgToArray from "./util/CanvasImgToArray";
 
 export class Canvas {
-  private bot: Bot
+  private CanvasProcessed: boolean
   public ID: number
   public CanvasArray: any[]
 
   constructor(bot: Bot) {
-    this.bot = bot
     this.ID = this.ParseID()
-    this.CanvasArray = CanvasImgToArray(this)
+    this.CanvasProcessed = false
+    CanvasImgToArray(this)
   }
 
   private ParseID(): number {
@@ -21,11 +21,14 @@ export class Canvas {
   }
   public set SCanvasArray(array: any[]) {
     this.CanvasArray = array
+    this.CanvasProcessed = true
   }
 
   public UpdatePixel(x: number, y: number, color: number) {
-    // console.log(this.CanvasArray[x][y], "->", color) 
-    this.CanvasArray[x][y] = color
+    if (this.CanvasProcessed) {
+      // console.log(this.CanvasArray[x][y], "->", color) 
+      this.CanvasArray[x][y] = color
+    }
   }
 
 }
