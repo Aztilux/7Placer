@@ -3,32 +3,28 @@ import Canvas from "../canvas/Canvas";
 import onmessage from "./util/onmessage";
 
 export default class Bot {
-  private _canvas: Canvas
-  private _ws: WebSocket
-  private static instance: Bot;
+  private canvas: Canvas
+  private ws: WebSocket
+  private static _client: Bot;
   public lastplace: number  
+  public static Bots: any[] = []
 
   constructor() {
-    this._canvas = new Canvas(this);
     this.lastplace = Date.now()
+    this.canvas = Canvas.instance
+    Bot.Bots.push(this)
   }
 
-  public static getInstance(): Bot {
-    if (!this.instance) {
-        this.instance = new Bot;
+  public static get client(): Bot {
+    if (!this._client) {
+        this._client = new Bot;
     }
-    return this.instance;
+    return this._client;
   }
 
-  public get canvas() {
-    return this._canvas
-  }
-  public get ws() {
-    return this._ws
-  }
 
   public set websocket(wss: WebSocket) {
-    this._ws = wss
+    this.ws = wss
     wss.addEventListener("message", (event: any) => { onmessage(event, this) });
   }
 
@@ -38,7 +34,10 @@ export default class Bot {
   }
 
   public placePixel(x: number, y: number, color: number) {
-    if (Date.now() - this.lastplace >= 19) {
+    const canvascolor = this.canvas.getColor(x, y)
+    if (Date.now() - this.lastplace >= (window as any).pixelspeed) {
+      if (canvascolor == color || canvascolor == 50) { return true }
+      // console.log(`[7p] placing: ${canvascolor} -> ${color}`)
       this.emit('p', `[${x},${y},${color},1]`)
       this.lastplace = Date.now()
       return true

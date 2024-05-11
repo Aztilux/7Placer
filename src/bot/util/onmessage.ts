@@ -1,4 +1,5 @@
 import Bot from "../Bot";
+import Canvas from "../../canvas/Canvas";
 
   function onmessage(event: any, bot: Bot) {
   const msg = event.data
@@ -8,12 +9,12 @@ import Bot from "../Bot";
     if (type == "p") {
       const pixelsReceived = msg[1]
       for (const pixel of pixelsReceived) {
-        const Canvas = bot.canvas
+        const canvas = Canvas.instance
         const x = pixel[0]
         const y = pixel[1]
         const color = pixel[2]
         const id = pixel[4]  
-        Canvas.UpdatePixel(x, y, color)
+        canvas.UpdatePixel(x, y, color)
       }
     }
   }

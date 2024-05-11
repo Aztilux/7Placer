@@ -1,7 +1,7 @@
 import Canvas from "../Canvas";
 import Bot from "../../bot/Bot";
 
-function CanvasImgToArray(canvas: Canvas) {
+function loadcanvas(canvas: Canvas) {
 
   console.log(canvas)
   const cloadercode = `
@@ -67,10 +67,10 @@ canvasworker.onmessage = function(event) {
   return CanvasArray
   }
   else {
-    console.log(`Processing took: ${Math.round(event.data)}ms`);
+    console.log(`[7placer] Processing took: ${Math.round(event.data)}ms`);
   }
 };
   canvasworker.postMessage(canvas.GID);
 }
 
-export default CanvasImgToArray
+export default loadcanvas
