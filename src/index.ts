@@ -2,6 +2,7 @@ import Canvas from './canvas/Canvas'
 import Bot from './bot/Bot'
 import "./plguin"
 import Queue from './util/queue';
+import './variables'
 
 Object.defineProperty(window.console, 'log', {
   configurable: false,
@@ -10,7 +11,7 @@ Object.defineProperty(window.console, 'log', {
   value: console.log
 });
 
-(self as any).pixelspeed = 19
-
 export { Canvas }
 export { Bot }
+export { Queue }
+export * from './variables'

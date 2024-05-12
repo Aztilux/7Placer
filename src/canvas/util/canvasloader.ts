@@ -62,15 +62,12 @@ const canvasworker = new Worker( URL.createObjectURL(cloaderblob) );
 
 canvasworker.onmessage = function(event) {
   if (Array.isArray(event.data)) {  
-  const CanvasArray: any[] = event.data
-  canvas.SCanvasArray = CanvasArray
-  return CanvasArray
+  canvas.CanvasArray = event.data // sets canvas
   }
   else {
     console.log(`[7placer] Processing took: ${Math.round(event.data)}ms`);
   }
 };
-  canvasworker.postMessage(canvas.GID);
+  canvasworker.postMessage(Canvas.ID);
 }
-
 export default loadcanvas

@@ -1,23 +1,45 @@
 import Bot from "../Bot";
 import Canvas from "../../canvas/Canvas";
+import getPalive from "./palive";
 
-  function onmessage(event: any, bot: Bot) {
-  const msg = event.data
-  if (msg.startsWith("42")) {
-    const msg = JSON.parse(event.data.substr(2))
-    const type = msg[0]
-    if (type == "p") {
-      const pixelsReceived = msg[1]
-      for (const pixel of pixelsReceived) {
-        const canvas = Canvas.instance
-        const x = pixel[0]
-        const y = pixel[1]
-        const color = pixel[2]
-        const id = pixel[4]  
-        canvas.UpdatePixel(x, y, color)
-      }
-    }
-  }
+// client
+export function onClientMessage(event: any) {
+        const msg = event.data
+        const bot = Bot.botClient
+        if (msg.startsWith("42")) {
+          const msg = JSON.parse(event.data.substr(2))
+          const type = msg[0]
+          if (type == "p") {
+            const pixelsReceived = msg[1]
+            for (const pixel of pixelsReceived) {
+              const canvas = Canvas.instance
+              const x = pixel[0]
+              const y = pixel[1]
+              const color = pixel[2]
+              const id = pixel[4]  
+              canvas.UpdatePixel(x, y, color)
+            }
+          }
+        }
 }
 
-export default onmessage
+// multibot
+export function onBotMessage(event: any, bot: Bot) {
+        const msg = event.data
+        if (msg.startsWith("42")) {
+          const msg = JSON.parse(event.data.substr(2))
+          const type = msg[0]
+          if (type == "server_time") {
+            bot.paliveServerTime = msg[1] // stores servertime for palive
+          } else if (type == "ping.alive") {
+            const hash = getPalive(bot.paliveServerTime)
+            bot.emit('pong.alive', `"${hash}"`)
+          } 
+        } else if (msg.startsWith("0")) {
+          bot.ws.send('40')
+        } else if (msg.startsWith("40")) {
+          bot.ws.send(`42["init",{"authKey":"${bot.auth.authKey}","authToken":"${bot.auth.authToken}","authId":"${bot.auth.authId}","boardId":${Canvas.ID}}]`)    
+        } else if (msg.startsWith("2")) {
+          bot.ws.send('3')
+        }
+}

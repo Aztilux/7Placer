@@ -3,12 +3,12 @@ import loadcanvas from "./util/canvasloader";
 
 export class Canvas {
   private CanvasProcessed: boolean
-  public ID: number
-  public CanvasArray: any[]
+  public static ID: number
+  private _CanvasArray: any[]
   private static _instance: Canvas
 
   constructor() {
-    this.ID = this.ParseID()
+    Canvas.ID = this.ParseID()
     this.CanvasProcessed = false
     loadcanvas(this)
   }
@@ -17,34 +17,30 @@ export class Canvas {
     return parseInt(window.location.href.split("/").slice(-1)[0].split("-")[0]);
   }
 
-  public static get instance(){
-    if (!this._instance) {
-      this._instance = new Canvas
-    }
-    return this._instance
+  public static get instance() {
+    if (!Canvas._instance) Canvas._instance = new Canvas
+    return Canvas._instance
   }
 
-  public get GID() {
-    return this.ID
-  }
-
-  public set SCanvasArray(array: any[]) {
-    this.CanvasArray = array
+  public set CanvasArray(array: any[]) {
+    this._CanvasArray = array
     this.CanvasProcessed = true
   }
-
-  public getColor(x: number, y: number) {
-    return(this.CanvasArray[x][y])
+  public get CanvasArray() {
+    return this._CanvasArray
   }
 
-  public UpdatePixel(x: number, y: number, color: number) {
-    if (this.CanvasProcessed) {
-      // console.log(this.getColor(x, y), "->", color) 
-      this.CanvasArray[x][y] = color
-    }
-  }
+        public getColor(x: number, y: number) {
+          try { return(this._CanvasArray[x][y]) }
+          catch { return 50 };
+        }
+
+        public UpdatePixel(x: number, y: number, color: number) {
+                if (!this.CanvasProcessed) return
+                this.CanvasArray[x][y] = color
+                // console.log(this.getColor(x, y), "->", color) 
+        }
 
 }
-Canvas.instance
 
 export default Canvas
