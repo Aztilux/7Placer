@@ -1,6 +1,7 @@
 import Bot from "../Bot";
 import Canvas from "../../canvas/Canvas";
 import getPalive from "./palive";
+import { close } from './websocket';
 
 // client
 export function onClientMessage(event: any) {
@@ -25,21 +26,27 @@ export function onClientMessage(event: any) {
 
 // multibot
 export function onBotMessage(event: any, bot: Bot) {
-        const msg = event.data
-        if (msg.startsWith("42")) {
-          const msg = JSON.parse(event.data.substr(2))
-          const type = msg[0]
-          if (type == "server_time") {
-            bot.paliveServerTime = msg[1] // stores servertime for palive
-          } else if (type == "ping.alive") {
-            const hash = getPalive(bot.paliveServerTime)
-            bot.emit('pong.alive', `"${hash}"`)
-          } 
-        } else if (msg.startsWith("0")) {
-          bot.ws.send('40')
-        } else if (msg.startsWith("40")) {
-          bot.ws.send(`42["init",{"authKey":"${bot.auth.authKey}","authToken":"${bot.auth.authToken}","authId":"${bot.auth.authId}","boardId":${Canvas.ID}}]`)    
-        } else if (msg.startsWith("2")) {
-          bot.ws.send('3')
-        }
+  const message = event.data;
+
+  if (message.startsWith("42")) {
+      const message = JSON.parse(event.data.substr(2));
+      const type = message[0];
+
+      if (type === "server_time") {
+          bot.paliveServerTime = message[1]; // stores servertime for palive
+      } else if (type === "ping.alive") {
+          const hash = getPalive(bot.paliveServerTime);
+          bot.emit('pong.alive', `"${hash}"`);
+      } else if (type === "throw.error") {
+          console.log(`[7p] [Bot ${bot.botid}] Pixelplace WS error: ${message[1]}`);
+          close(bot)
+          
+      }
+  } else if (message.startsWith("0")) {
+      bot.ws.send('40');
+  } else if (message.startsWith("40")) {
+      bot.ws.send(`42["init",{"authKey":"${bot.auth.authKey}","authToken":"${bot.auth.authToken}","authId":"${bot.auth.authId}","boardId":${Canvas.ID}}]`);
+  } else if (message.startsWith("2")) {
+      bot.ws.send('3');
+  }
 }

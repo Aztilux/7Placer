@@ -1,7 +1,7 @@
 import * as cmd from './auth/util/commands'
 
 export default (window as any).seven = {
-  connectedbots: [],
+  bots: [],
   pixelspeed: 19,
   queue: [],
   inprogress: false,

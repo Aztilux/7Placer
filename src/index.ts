@@ -1,8 +1,9 @@
 import Canvas from './canvas/Canvas'
 import Bot from './bot/Bot'
-import "./plguin"
-import Queue from './util/queue';
+import Queue from './modules/SevenQueue';
+import './modules'
 import './variables'
+import './css/css'
 
 Object.defineProperty(window.console, 'log', {
   configurable: false,

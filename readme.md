@@ -1,2 +1,3 @@
-# ngl this is kinda wip
-# credits and stuff soon:tm:
+# 7PLACER WIP
+Credits to: Azti - Main Dev
+Other credits: 0vc4
