@@ -6,11 +6,13 @@ export class Canvas {
     public static ID: number
     private _CanvasArray: any[]
     private static _instance: Canvas
+    public static customCanvas: any
 
     constructor() {
       Canvas.ID = this.ParseID()
       this.CanvasProcessed = false
       loadcanvas(this)
+      Canvas.customCanvas = this.createPreviewCanvas()
     }
 
     private ParseID(): number {
@@ -35,11 +37,23 @@ export class Canvas {
       catch { return 50 };
     }
 
-    public UpdatePixel(x: number, y: number, color: number) {
+    public updatePixel(x: number, y: number, color: number) {
             if (!this.CanvasProcessed) return
             this.CanvasArray[x][y] = color
             // console.log(this.getColor(x, y), "->", color) 
     }
+
+    public createPreviewCanvas() {
+        const canvas: any = $(`<canvas width="2500" height="2088">`).css({ position: 'absolute', pointerEvents: 'none', left: '0px', top:'0px', imageRendering: 'pixelated', opacity: '50%'});
+
+        $('#canvas').ready(function() {
+          $('#painting-move').append(canvas)                        
+        });
+        const ctx = canvas[0].getContext("2d");
+        console.log(ctx)
+        return ctx
+    }
+
 
 }
 

@@ -1,4 +1,5 @@
-import '../variables';
+import Canvas from '../../canvas/Canvas';
+import '../../variables';
 import Queue from './SevenQueue';
 
 const seven = (window as any).seven
@@ -10,7 +11,7 @@ const colors = [
   0xFFC49F, 0xFFDFCC, 0xFFA7D1, 0xCF6EE4, 0xEC08EC, 0x820080, 0x5100FF, 0x020763,
   0x0000EA, 0x044BFF, 0x6583CF, 0x36BAFF, 0x0083C7, 0x00D3DD, 0x45FFC8, 0x003638,
   0x477050, 0x98FB98, 0xFF7000, 0xCE2939, 0xFF416A, 0x7D26CD, 0x330077, 0x005BA1,
-  0xB5E8EE, 0x1B7400, 0xCCCCCC
+  0xB5E8EE, 0x1B7400
 ];
 
 function getEuclideanDistance(c1: number, c2: number) {
@@ -39,8 +40,17 @@ function findClosestColor(color: number) {
   }
   return colorNumber;
 }
-``
-export async function ImageToPixels(image: ImageBitmap) {
+
+function previewCanvasImage (x: number, y: number, image: File) {
+  const ctx = Canvas.customCanvas
+  const img = new Image();
+  img.onload = function() {
+      ctx.drawImage(img, x, y);
+  };
+  img.src = URL.createObjectURL(image); 
+}
+
+export async function ImageToPixels(image: any) {
   const result = [];
   const canvas = new OffscreenCanvas(image.width, image.height);
   const ctx = canvas.getContext('2d');
@@ -67,9 +77,11 @@ export async function ImageToPixels(image: ImageBitmap) {
   return result;
 }
 
-export async function botImage(x: number, y: number, image: any[]) {
-    // console.log(x, y, image)
-    image.forEach((pixel) => 
+export async function botImage(x: number, y: number, image: any | File) {
+    const bitmap = await createImageBitmap(image)
+    const processed = await ImageToPixels(bitmap)
+    previewCanvasImage(x, y, image)
+    processed.forEach((pixel: { x: number; y: number; color: number; }) => 
       Queue.add(pixel.x + x, pixel.y + y, pixel.color)
     )
     Queue.start()

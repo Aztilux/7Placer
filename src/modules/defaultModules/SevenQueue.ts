@@ -1,5 +1,6 @@
-import Bot from "../bot/Bot"
-import '../variables'
+import Bot from "../../bot/Bot"
+import Canvas from "../../canvas/Canvas"
+import '../../variables'
 
 const seven = (window as any).seven
 
@@ -18,6 +19,7 @@ class Queue {
     seven.queue.push({x: x, y: y, color: color})
   }
   public static clear() {
+    console.log('Queue cleared: ', seven.queue)
     seven.queue = []
   }
 
@@ -27,6 +29,7 @@ class Queue {
     Queue.botindex = 0
     Queue.tick = 0
     const Bots = seven.bots
+    // seven.queue.sort(() => Math.random() - 0.5);
     seven.inprogress = true
     while (seven.inprogress == true && seven.queue.length > 0) {
     const bot = Bots[Queue.botindex]
@@ -56,6 +59,7 @@ class Queue {
 
   public static stop() {
     seven.inprogress = false
+    Canvas.customCanvas.clearRect(0,0,3000,3000)
     Queue.clear();
   }
 

@@ -1,6 +1,8 @@
 import Auth from "../Auth";
 import Bot from "../../bot/Bot";
+import getPainting from "../../requests/get-painting";
 import '../../variables'
+import { disconnect } from "../../bot/util/websocket";
 
 const window2 = (window as any)
 var LocalAccounts: { authId: string; authKey: string; authToken: string; }[] = []
@@ -13,6 +15,9 @@ async function storagePush() {
 // restore localstorage to localaccounts
 async function storageGet() {
     LocalAccounts = JSON.parse(localStorage.getItem('LocalAccounts'));
+    if (LocalAccounts === null) {
+        LocalAccounts = []
+    }
 }
 
 // saves from params
@@ -31,6 +36,7 @@ export async function getAuth(print: boolean = true) {
     const authId = await cookieStore.get("authId");
 
     if (!authToken || !authKey || !authId) return
+    // const userinfo = await getPainting(authId.value, authKey.value, authToken.value)
     if (print) console.log(`authId = "${authId.value}", authKey = "${authKey.value}", authToken = "${authToken.value}"`);
     return { authToken: authToken.value, authKey: authKey.value, authId: authId.value };
 }
@@ -46,11 +52,9 @@ export async function setAccount() {
 
 // logs saved auths
 export async function getAccounts() {
-    const receivedAccounts = JSON.parse(localStorage.getItem('LocalAccounts'));
-    console.log(receivedAccounts)
-    if (receivedAccounts == null) { console.log('No accounts found'); return }
-
     storageGet()
+    console.log(LocalAccounts)
+    if (LocalAccounts == null) { console.log('No accounts found'); return }
     console.log(`Found ${LocalAccounts.length} acccounts`)
 }
 
@@ -65,38 +69,37 @@ export async function deleteAccount(index: number) {
 // connection controls
 export async function multiBot(param: string, index?: number) {
     storageGet()
-    switch (param) {
-        case "ConnectAll":
+    switch (param.toLowerCase()) {
+        case "connectall":
             for (const account of LocalAccounts) {
               const auth = new Auth(account)
-              const bot = new Bot(auth)
-              console.log(`[7p] Attempting to connect bot ${bot.botid}`)
+              new Bot(auth)
+              await delay(500)
             }
             break
-        case "Connect":
+        case "connect":
             if (index != undefined) { console.log('Missing bot number'); return };
             const account = LocalAccounts[index];
             const auth = new Auth(account);
-            const bot = new Bot(auth);
+            new Bot(auth);
             break  
-        case "DisconnectAll":
+        case "disconnectall":
+            if (window2.seven.bots.length == 1) return
             index = 0
-            for (index; index < window2.seven.bots.length;) {
-              const bot = window2.seven.bots[index]
+            for (const bot of window2.seven.bots) {
               if (!bot.isClient) {
-                bot.ws.close() 
-                window2.seven.bots.splice(1, 1) 
-                console.log('Disconnected number ', bot.botid)
+                disconnect(bot)
               }
-              if (index != window2.seven.bots.length-1) index = index + 1
             }
             break  
-        case "Disconnect":
+        case "disconnect":
             if (index == undefined) { console.log('Missing bot number'); return };
-            if (index == 0) { console.log('You cannot disconnect the client'); return}
-
-            window2.seven.bots[index].ws.close(); 
-            window2.seven.bots.splice(index, 1) 
+            if (index == 0) { console.log('You scannot disconnect the client'); return }
+            disconnect(window2.seven.bots[index])
             break                     
     }       
 }
+
+async function delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }

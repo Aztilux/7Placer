@@ -2,11 +2,11 @@ import * as cmd from './auth/util/commands'
 
 export default (window as any).seven = {
   bots: [],
-  pixelspeed: 19,
+  pixelspeed: 21,
   queue: [],
   inprogress: false,
   protect: false,
-  tickspeed: 200,
+  tickspeed: 1000,
   saveAuth: cmd.saveAuth,
   getAuth: cmd.getAuth,
   setAccount: cmd.setAccount,

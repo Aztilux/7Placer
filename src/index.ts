@@ -1,6 +1,6 @@
 import Canvas from './canvas/Canvas'
 import Bot from './bot/Bot'
-import Queue from './modules/SevenQueue';
+import Queue from './modules/defaultModules/SevenQueue';
 import './modules'
 import './variables'
 import './css/css'
@@ -15,4 +15,5 @@ Object.defineProperty(window.console, 'log', {
 export { Canvas }
 export { Bot }
 export { Queue }
+export * from './modules'
 export * from './variables'

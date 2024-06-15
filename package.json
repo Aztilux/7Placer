@@ -1,7 +1,7 @@
 {
-  "name": "vegettaplacer",
-  "description": "shark writing code!! !",
-  "version": "0.0.1",
+  "name": "7Placer",
+  "description": "Tampermonkey Typescript Pixelplace Bot",
+  "version": "1.0",
   "author": {
     "name": "Azti"
   },

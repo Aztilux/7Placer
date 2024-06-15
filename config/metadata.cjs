@@ -5,7 +5,7 @@ const {
 } = require("../package.json");
 
 module.exports = {
-  name: "777placer",
+  name: "7Placer",
   version: version,
   author: author,
   match: "https://pixelplace.io/*",

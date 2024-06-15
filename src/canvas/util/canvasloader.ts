@@ -49,7 +49,7 @@ self.addEventListener('message', async (event) => {
             const a = pixelData[pixelIndex + 3];
 
             if (a < 1) {
-                continue; // awa
+                continue; // water (Be careful on canvasses without preset.)
             }
 
             const r = pixelData[pixelIndex];
