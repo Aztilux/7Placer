@@ -14,7 +14,7 @@ const colors = [
   0xB5E8EE, 0x1B7400
 ];
 
-function getEuclideanDistance(c1: number, c2: number) {
+function getColorDistance(c1: number, c2: number) {
   // Image Color
   const r1 = (c1 >> 16) & 0xFF;
   const g1 = (c1 >> 8) & 0xFF;
@@ -31,7 +31,7 @@ function findClosestColor(color: number) {
   let colorNumber: number
   let index = 0
   for (const pxpColor of colors) {
-    const distance = getEuclideanDistance(color, pxpColor);
+    const distance = getColorDistance(color, pxpColor);
     if (distance < minDistance) {
       minDistance = distance;
       colorNumber = index

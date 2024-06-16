@@ -2,8 +2,6 @@ import Canvas from "../Canvas";
 import Bot from "../../bot/Bot";
 
 export default function loadcanvas(canvas: Canvas) {
-    console.log(canvas)
-    
     canvasworker.onmessage = function(event) {
       if (Array.isArray(event.data)) {  
       canvas.CanvasArray = event.data // sets canvas

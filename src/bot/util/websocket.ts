@@ -18,12 +18,12 @@ const customWS = window.WebSocket;
 export async function connect(bot: Bot) {
   console.log(`[7p] Attempting to connect account ${bot.generalinfo.user.name}`)
   const socket = new customWS("wss://pixelplace.io/socket.io/?EIO=4&transport=websocket");
-  socket.addEventListener("open", () => { seven.bots.push(bot); })
   socket.addEventListener("message", (event: any) => { onBotMessage(event, bot); });
   return socket
 } 
 
 export function disconnect(bot: Bot) {
+  if (!bot) {console.log('[7p] Cannot close bot that doesnt exist.'); return}
   bot.ws.close()
   const result = seven.bots.filter((checkedBot: Bot) => checkedBot.botid != bot.botid)
   seven.bots = result

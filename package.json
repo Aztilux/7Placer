@@ -1,7 +1,7 @@
 {
   "name": "7Placer",
-  "description": "Tampermonkey Typescript Pixelplace Bot",
-  "version": "1.0",
+  "description": "typescript pixelplace.io bot",
+  "version": "v1.3.1a",
   "author": {
     "name": "Azti"
   },

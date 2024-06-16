@@ -2,7 +2,9 @@ import Bot from "../Bot";
 import Canvas from "../../canvas/Canvas";
 import getPalive from "./palive";
 import { disconnect } from './websocket';
+import "../../variables";
 
+const seven = (window as any).seven 
 // client
 export function onClientMessage(event: any) {
     const msg = event.data
@@ -55,6 +57,9 @@ export function onBotMessage(event: any, bot: Bot) {
             console.log(`[7p] [Bot ${bot.botid}] Pixelplace WS error: ${message[1]}`);
             disconnect(bot)  
             break
+          case "canvas":
+            seven.bots.push(bot);
+            break            
         }   
 
   }

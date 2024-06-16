@@ -19,17 +19,26 @@ class Queue {
     seven.queue.push({x: x, y: y, color: color})
   }
   public static clear() {
-    console.log('Queue cleared: ', seven.queue)
+    // console.log('Queue cleared: ', seven.queue)
     seven.queue = []
   }
 
   public static async start() { // waiter waiter! I want .sort!
-    console.log('q start: ', seven.queue)
+    if (!Canvas.isProcessed) { console.log('[7p] Error starting queue: Canvas has not been processed yet.'); Queue.stop(); return }
     Queue.queueindex = 0
     Queue.botindex = 0
     Queue.tick = 0
     const Bots = seven.bots
-    // seven.queue.sort(() => Math.random() - 0.5);
+    // seven.queue.sort(() => Math.random() - 0.5); - rand
+    // seven.queue.sort((a: { color: number }, b: { color: number }) => a.color - b.color); - colors
+    // circle
+    let CX = Math.floor((seven.queue[0].x + seven.queue[seven.queue.length - 1].x) / 2);
+    let CY = Math.floor((seven.queue[0].y + seven.queue[seven.queue.length - 1].y) / 2);  
+      seven.queue.sort((a: { x: number; y: number }, b: { x: number; y: number }) => {
+          const distanceA = Math.sqrt((a.x - CX) ** 2 + (a.y - CY) ** 2);
+          const distanceB = Math.sqrt((b.x - CX) ** 2 + (b.y - CY) ** 2);
+          return distanceA - distanceB;
+      });
     seven.inprogress = true
     while (seven.inprogress == true && seven.queue.length > 0) {
     const bot = Bots[Queue.botindex]
@@ -43,7 +52,7 @@ class Queue {
     // handles depending on protect or not
     if (!seven.protect && Queue.queueindex == seven.queue.length) {
       Queue.stop()
-      console.log('finished q')
+      console.log('[7p] Queue done.')
     } else if (seven.protect == true && Queue.queueindex == seven.queue.length) {
       Queue.queueindex = 0
     }

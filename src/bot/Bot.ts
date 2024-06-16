@@ -69,7 +69,7 @@ export default class Bot {
         var name = client == true ? 'Client' : this.generalinfo.user.name
         const tracker = $('<div class="track" id="bottracker">').text(`[7P] ${name}`).css(trackercss)
         $('#canvas').ready(function() {
-            console.log(`created tracker: ${name}`)
+            // console.log(`[7p] created tracker: ${name}`)
             $('#painting-move').append(tracker)                        
         });
         return tracker              

@@ -1,11 +1,11 @@
 import Auth from "../Auth";
 import Bot from "../../bot/Bot";
+import variables from "../../variables";
 import getPainting from "../../requests/get-painting";
-import '../../variables'
 import { disconnect } from "../../bot/util/websocket";
 
 const window2 = (window as any)
-var LocalAccounts: { authId: string; authKey: string; authToken: string; }[] = []
+var LocalAccounts: { username: string, authId: string; authKey: string; authToken: string; }[] = []
 
 // save changes in localstorage
 async function storagePush() {
@@ -20,17 +20,22 @@ async function storageGet() {
     }
 }
 
+async function delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
 // saves from params
-export async function saveAuth(authId: string, authKey: string, authToken: string) {
-    const account = {authId, authKey, authToken}
+export async function saveAuth(username: string, authId: string, authKey: string, authToken: string, print: boolean = true) {
+    if (!authId || !authKey || !authToken) { console.log('[7p] saveAuth ussage: saveAuth(authId, authKey, authToken)'); return }
+    const account = { username, authId, authKey, authToken}
     LocalAccounts.push(account)
     storagePush()
-    console.log('Auth saved. Saved list: ', LocalAccounts)
+    if (print) console.log('Auth saved. Saved list: ', LocalAccounts)
 }
 
 // returns client's auth
 export async function getAuth(print: boolean = true) {
-    const cookieStore = (window as any).cookieStore
+    const cookieStore = window2.cookieStore
     const authToken = await cookieStore.get("authToken");
     const authKey = await cookieStore.get("authKey");
     const authId = await cookieStore.get("authId");
@@ -42,11 +47,11 @@ export async function getAuth(print: boolean = true) {
 }
 
 // saves auth from client cookies
-export async function setAccount() {
+export async function saveAccount() {
     storageGet()
     const AuthObj = await getAuth(false)
-    LocalAccounts.push(AuthObj)
-    storagePush()
+    const userinfo = await getPainting(AuthObj.authId, AuthObj.authKey, AuthObj.authToken) 
+    saveAuth(userinfo.user.name, AuthObj.authId, AuthObj.authKey, AuthObj.authToken, false)
     console.log('Auth saved. Saved list: ', LocalAccounts)
 }
 
@@ -59,27 +64,41 @@ export async function getAccounts() {
 }
 
 // deletes auths
-export async function deleteAccount(index: number) {
+export async function deleteAccount(input: string | number) {
+    if (input === undefined) { console.log('deleteAccount usage: deleteAccount(name or index)')}
     storageGet()
-    LocalAccounts.splice(index, 1)
+    if (typeof input == 'string') {
+        const index = LocalAccounts.findIndex((account) => account.username.toLowerCase() == input.toLowerCase())
+        if (index == -1) { console.log(`[7p] Error deleting: Found no accounts with name ${input}`); return }
+        LocalAccounts.splice(index, 1) 
+    } else if (typeof input == 'number') {
+        LocalAccounts.splice(input, 1) 
+    }
+    console.log(`Deleted account ${input}`)
     console.log(LocalAccounts)
     storagePush()
 }
 
 // connection controls
-export async function multiBot(param: string, index?: number) {
+export async function multibot(param: string, index?: number) {
     storageGet()
+    if (!param) { console.log('multiBot usage: ("connectall"), ("connect", index), ("disconnectall"), ("disconnect", index)'); return }
     switch (param.toLowerCase()) {
         case "connectall":
             for (const account of LocalAccounts) {
-              const auth = new Auth(account)
-              new Bot(auth)
-              await delay(500)
+                // checks if bot is already connected
+                const connectedbot = window2.seven.bots.find((bot: Bot) => bot.generalinfo?.user.name == account.username)
+                if (connectedbot) { console.log(`[7p] Account ${account.username} is already connected.`); return}
+                const auth = new Auth(account)
+                new Bot(auth)
+                await delay(500)
             }
             break
         case "connect":
             if (index != undefined) { console.log('Missing bot number'); return };
             const account = LocalAccounts[index];
+            const connectedbot = window2.seven.bots.find((bot: Bot) => bot.generalinfo?.user.name == account.username)
+            if (connectedbot) { console.log(`[7p] Account ${account.username} is already connected.`); return}
             const auth = new Auth(account);
             new Bot(auth);
             break  
@@ -87,19 +106,14 @@ export async function multiBot(param: string, index?: number) {
             if (window2.seven.bots.length == 1) return
             index = 0
             for (const bot of window2.seven.bots) {
-              if (!bot.isClient) {
+              if (!bot.isClient)
                 disconnect(bot)
-              }
             }
             break  
         case "disconnect":
-            if (index == undefined) { console.log('Missing bot number'); return };
-            if (index == 0) { console.log('You scannot disconnect the client'); return }
+            if (index == undefined) { console.log('[7p] disconnect requires an index.'); return };
+            if (index == 0) { console.log('[7p] You cannot disconnect the client'); return }
             disconnect(window2.seven.bots[index])
             break                     
     }       
 }
-
-async function delay(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }

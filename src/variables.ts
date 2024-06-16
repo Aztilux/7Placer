@@ -9,8 +9,8 @@ export default (window as any).seven = {
   tickspeed: 1000,
   saveAuth: cmd.saveAuth,
   getAuth: cmd.getAuth,
-  setAccount: cmd.setAccount,
+  saveAccount: cmd.saveAccount,
   getAccounts: cmd.getAccounts,
   deleteAccount: cmd.deleteAccount,
-  multiBot: cmd.multiBot,
+  multibot: cmd.multibot,
 }

@@ -2,15 +2,15 @@ import Bot from "../bot/Bot";
 import loadcanvas from "./util/canvasloader";
 
 export class Canvas {
-    private CanvasProcessed: boolean
+    public static isProcessed: boolean
     public static ID: number
-    private _CanvasArray: any[]
-    private static _instance: Canvas
     public static customCanvas: any
+    private _CanvasArray: any[]
+    private static _instance: Canvas    
 
     constructor() {
       Canvas.ID = this.ParseID()
-      this.CanvasProcessed = false
+      Canvas.isProcessed = false
       loadcanvas(this)
       Canvas.customCanvas = this.createPreviewCanvas()
     }
@@ -26,7 +26,7 @@ export class Canvas {
 
     public set CanvasArray(array: any[]) {
       this._CanvasArray = array
-      this.CanvasProcessed = true
+      Canvas.isProcessed = true
     }
     public get CanvasArray() {
       return this._CanvasArray
@@ -38,7 +38,7 @@ export class Canvas {
     }
 
     public updatePixel(x: number, y: number, color: number) {
-            if (!this.CanvasProcessed) return
+            if (!Canvas.isProcessed) return
             this.CanvasArray[x][y] = color
             // console.log(this.getColor(x, y), "->", color) 
     }
@@ -50,7 +50,6 @@ export class Canvas {
           $('#painting-move').append(canvas)                        
         });
         const ctx = canvas[0].getContext("2d");
-        console.log(ctx)
         return ctx
     }
 
