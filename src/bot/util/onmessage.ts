@@ -1,14 +1,15 @@
-import Bot from "../Bot";
+import { WSBot, Client } from "../Bot";
 import Canvas from "../../canvas/Canvas";
 import getPalive from "./palive";
-import { disconnect } from './websocket';
+import { closeBot } from './websocket';
 import "../../variables";
+import { deleteAccount } from "../../auth/util/commands";
 
 const seven = (window as any).seven 
 // client
 export function onClientMessage(event: any) {
     const msg = event.data
-    const bot = Bot.botClient
+    const bot = Client.instance
     if (msg.startsWith("42")) {
       const msg = JSON.parse(event.data.substr(2))
       const type = msg[0]
@@ -37,27 +38,35 @@ export function onClientMessage(event: any) {
     }
 }
 // multibot
-export function onBotMessage(event: any, bot: Bot) {
+export async function onBotMessage(event: any, bot: WSBot) {
   const message = event.data;
 
   // game packets
   if (message.startsWith("42")) {
       const message = JSON.parse(event.data.substr(2));
       const type = message[0];
+      const botid = bot.generalinfo.user.id
+      const botname = bot.username
       switch (type) {
           case "server_time":
             bot.paliveServerTime = message[1]; // stores servertime for palive
             break
           case "ping.alive":
-            const hash = getPalive(bot.paliveServerTime, bot.generalinfo.user.id);
-            console.log('[7p]', bot.generalinfo.user.name, ': pong =', hash, bot.generalinfo.user.id)
+            const hash = getPalive(bot.paliveServerTime, botid);
+            console.log('[7p]', botname, ': pong =', hash, botid)
             bot.emit('pong.alive', `"${hash}"`);
             break
           case "throw.error":
-            console.log(`[7p] [Bot ${bot.botid}] Pixelplace WS error: ${message[1]}`);
-            disconnect(bot)  
+            if (message[1] == 49) { 
+              console.log(`[7p] [Bot ${botname}] Error (${message[1]}): This auth is not valid! Deleting account from saved accounts...`); 
+              deleteAccount(botname)
+              closeBot(bot) 
+              return; 
+            }
+            console.log(`[7p] [Bot ${botname}] Pixelplace WS error: ${message[1]}`);
             break
-          case "canvas":
+          case "canvas":  
+            console.log(`[7p] Succesfully connected to bot ${bot.username}`)
             seven.bots.push(bot);
             break            
         }   

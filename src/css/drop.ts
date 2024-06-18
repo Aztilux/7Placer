@@ -1,4 +1,4 @@
-import { drop } from './css'
+import { drop } from './style'
 import { botImage, ImageToPixels } from '../modules/defaultModules/SevenImageTools'
 import getClientMouse from '../modules/util/getClientMouse'
 

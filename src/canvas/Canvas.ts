@@ -1,5 +1,5 @@
-import Bot from "../bot/Bot";
 import loadcanvas from "./util/canvasloader";
+import { canvascss } from "../css/style";
 
 export class Canvas {
     public static isProcessed: boolean
@@ -44,7 +44,7 @@ export class Canvas {
     }
 
     public createPreviewCanvas() {
-        const canvas: any = $(`<canvas width="2500" height="2088">`).css({ position: 'absolute', pointerEvents: 'none', left: '0px', top:'0px', imageRendering: 'pixelated', opacity: '50%'});
+        const canvas: any = $(`<canvas width="2500" height="2088">`).css(canvascss);
 
         $('#canvas').ready(function() {
           $('#painting-move').append(canvas)                        

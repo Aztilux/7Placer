@@ -1,5 +1,4 @@
 import Canvas from "../Canvas";
-import Bot from "../../bot/Bot";
 
 export default function loadcanvas(canvas: Canvas) {
     canvasworker.onmessage = function(event) {

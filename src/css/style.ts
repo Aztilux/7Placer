@@ -11,7 +11,7 @@ export const trackercss = {
 }
 
 // design by 0vc4
-export const drop = {  
+export const drop = {
     width: 'calc(100% - 2em)', 
     height: 'calc(100% - 2em)', 
     position: 'fixed',
@@ -26,5 +26,25 @@ export const drop = {
     alignItems: 'center',
     border: '3px white dashed',
     borderRadius: '18px',
-    margin: '1em'
+    margin: '1em',
 }
+
+export const canvascss = { 
+    position: 'absolute', 
+    pointerEvents: 'none', 
+    left: '0px', 
+    top:'0px', 
+    imageRendering: 'pixelated',
+    opacity: '50%',
+    animation: 'blink 3s ease-out infinite'
+}
+
+const blink = document.createElement("style");
+blink.type = "text/css";
+blink.innerText = `
+@keyframes blink {
+  0% { opacity: .30; }
+  50% { opacity: .10; }
+  100% { opacity: .30; }
+}`;
+document.head.appendChild(blink);

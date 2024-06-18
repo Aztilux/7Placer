@@ -1,73 +1,55 @@
-import { connect } from  "./util/websocket"
+import { hookBot } from  "./util/websocket"
 import Canvas from "../canvas/Canvas";
 import Auth from "../auth/Auth";
 import '../variables'
-import '../css/css'
-import { trackercss } from "../css/css";
+import '../css/style'
+import { trackercss } from "../css/style";
 import getPainting from "../requests/get-painting";
-import { cli } from "webpack";
 
 const seven = (window as any).seven
-export default class Bot {
+export class Bot {
   
-    private static _client: Bot;
-    private static clientUsername: string
     public static botIndex: number = 0
-
-    private _canvas: Canvas
-    private _auth: Auth
+    private trackeriters: number = 0
     private _ws: WebSocket
-    private tracker: JQuery<HTMLElement>;
+    public tracker: JQuery<HTMLElement>;
     public username: string
-    public isClient: boolean = false
     public paliveServerTime: number
     public lastplace: number
-    public generalinfo: any
     public botid: number
 
-    constructor(auth?: Auth) {
+    constructor() {
         this.lastplace = Date.now();
-        this._canvas = Canvas.instance;
         this.botid = Bot.botIndex;
         Bot.botIndex += 1; // id for next bot
-        if (!auth) { 
-            Bot._client = this; 
-            this.isClient = true; 
-            this.tracker = this.createGUItracker(true)
-            seven.bots.push(this);
-        } 
-        else {
-            this._auth = auth;
-            this.startBot()
-        };
     }   
-
-    private async startBot() {
-        this.generalinfo = await getPainting(this.auth.authId, this.auth.authKey, this.auth.authToken)  
-        this.tracker = this.createGUItracker()
-        this._ws = await connect(this);
-    }
 
     public emit(event: any, params: any) {
         this.ws.send(`42["${event}",${params}]`)
     }
 
     public placePixel(x: number, y: number, color: number, tracker: boolean = true) {
-        const canvascolor = this._canvas.getColor(x, y)
+        const canvas = Canvas.instance
+        const canvascolor = canvas.getColor(x, y)
 
         if (Date.now() - this.lastplace < seven.pixelspeed) return false;
         if (canvascolor == color || canvascolor == 50) return true;
-        if (tracker) $(this.tracker).css({ top: y, left: x, display: 'block', });
 
-        // console.log(`[7p] placing: ${canvascolor} -> ${color}`)
+        if (tracker && this.trackeriters >= 6) {
+            $(this.tracker).css({ top: y, left: x, display: 'block' });
+            this.trackeriters = 0
+        }
+        
+        this.trackeriters += 1
         this.emit('p', `[${x},${y},${color},1]`)
         this.lastplace = Date.now()
+        // console.log(`[7p] placing: ${canvascolor} -> ${color}`)
         return true
     }
 
-    private createGUItracker(client: boolean = false) {
-        var name = client == true ? 'Client' : this.generalinfo.user.name
-        const tracker = $('<div class="track" id="bottracker">').text(`[7P] ${name}`).css(trackercss)
+
+    public createTracker() {
+        const tracker = $('<div class="track" id="bottracker">').text(`[7P] ${this.username}`).css(trackercss)
         $('#canvas').ready(function() {
             // console.log(`[7p] created tracker: ${name}`)
             $('#painting-move').append(tracker)                        
@@ -75,17 +57,51 @@ export default class Bot {
         return tracker              
     }
 
-    public static get botClient(): Bot {
-        if (!Bot._client) new Bot();
-        return Bot._client
-    }
-    public get auth(): Auth {
-        return this._auth
-    }
     public set ws(wss: WebSocket) {
         this._ws = wss
     }
     public get ws(): WebSocket {
         return this._ws
+    }
+}
+
+export class WSBot extends Bot {
+    private _auth: Auth
+    public username: string;
+    public generalinfo: any
+
+    constructor(auth: Auth, username: string) {
+        super()
+        if (!username || !auth) { console.error("[7p ERROR]: 'auth' and 'username' should both be in the constructor arguments."); return }
+        this._auth = auth;
+        this.username = username
+        this.startBot()
+    }
+
+    private async startBot() {
+        this.generalinfo = await getPainting(this.auth.authId, this.auth.authKey, this.auth.authToken)  
+        this.tracker = this.createTracker()
+        this.ws = await hookBot(this);
+    }
+
+    public get auth(): Auth {
+        return this._auth
+    }
+}
+
+export class Client extends Bot {
+    public username: string;
+    public static instance: Client
+
+    constructor() {
+        super()
+        this.username = 'Client'
+        Client.instance = this
+        this.tracker = this.createTracker()
+        seven.bots.push(this);
+    }
+
+    public static get Client(): Bot {
+        return Client.instance
     }
 }
