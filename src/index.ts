@@ -12,6 +12,9 @@ Object.defineProperty(window.console, 'log', {
   value: console.log
 });
 
+import packageInfo from '../package.json';
+console.log('7Placer Loaded! Version:', packageInfo.version)
+
 export { Canvas }
 export { Bot }
 export { Queue }

@@ -17,36 +17,34 @@ class Queue {
     seven.queue = []
   }
 
-    public static async start() { // waiter waiter! I want .sort!
-      if (!Canvas.isProcessed) { console.log('[7p] Error starting queue: Canvas has not been processed yet.'); Queue.stop(); return }
-      const Bots = seven.bots
-      var position = 0
-      var tick = 0
-      var botpos = 0
-      await Queue.sort()
-      seven.inprogress = true
-      while (seven.inprogress == true && seven.queue.length > 0) {
-      if (botpos == Bots.length) botpos = 0
-      if (!seven.protect && position == seven.queue.length) {
-        Queue.stop()
-        console.log('[7p] Queue done.')
-      } else if (seven.protect == true && position == seven.queue.length) {
-        position = 0
-      }
-      const bot = Bots[botpos]
-      const pixel = seven.queue[position]
-      const response = bot.placePixel(pixel.x, pixel.y, pixel.color)
+  public static async start() { // waiter waiter! I want .sort!
+    if (!Canvas.isProcessed) { console.log('[7p] Error starting queue: Canvas has not been processed yet.'); Queue.stop(); return }
+    await Queue.sort()
+    var pos = 0
+    var tick = 0
+    seven.inprogress = true
+    while (seven.inprogress == true && seven.queue.length > 0) {
+    const pixel = seven.queue[pos]
+    const bot = await Bot.findAvailableBot()
+    await bot.placePixel(pixel.x, pixel.y, pixel.color)
 
-      botpos += 1
-      if (response) position += 1
-      // tick management 
-      if (tick >= seven.tickspeed) {
-        tick = 0
-        await new Promise(resolve => setTimeout(resolve, 0));
-      }
-      tick += 1
-      }
+    pos += 1 // next pixel
+    if (!seven.protect && pos == seven.queue.length) {
+      Queue.stop()
+      console.log('[7p] Queue done.')
+    } else if (seven.protect == true && pos == seven.queue.length) {
+      pos = 0
     }
+
+    await new Promise(resolve => setTimeout(resolve, 0));
+    // tick management 
+    if (tick >= seven.tickspeed) {
+      tick = 0
+      await new Promise(resolve => setTimeout(resolve, 0));
+    }
+    tick += 1
+    }
+  }
 
     static async sort() {
       const array = seven.queue;

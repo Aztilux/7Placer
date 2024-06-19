@@ -28,24 +28,46 @@ export class Bot {
         this.ws.send(`42["${event}",${params}]`)
     }
 
-    public placePixel(x: number, y: number, color: number, tracker: boolean = true) {
-        const canvas = Canvas.instance
-        const canvascolor = canvas.getColor(x, y)
+    public async placePixel(x: number, y: number, color: number, client: boolean = false, tracker: boolean = true): Promise<boolean> {
+        var tick = 0
+        while (true) {
+            const canvas = Canvas.instance
+            const canvascolor = canvas.getColor(x, y);
+            if (canvascolor == color || canvascolor == 50) return true;
+            if (Date.now() - this.lastplace >= seven.pixelspeed) {
+                this.emit('p', `[${x},${y},${color},1]`);
+                this.lastplace = Date.now();
 
-        if (Date.now() - this.lastplace < seven.pixelspeed) return false;
-        if (canvascolor == color || canvascolor == 50) return true;
-
-        if (tracker && this.trackeriters >= 6) {
-            $(this.tracker).css({ top: y, left: x, display: 'block' });
-            this.trackeriters = 0
+                if (tracker && this.trackeriters >= 6) {
+                    $(this.tracker).css({ top: y, left: x, display: 'block' });
+                    this.trackeriters = 0
+                }
+                
+                // console.log(`[7p] placing: ${canvascolor} -> ${color}`)
+                this.trackeriters += 1
+                return true;
+            }
+            
+            tick += 1
+            if (tick == seven.tickspeed) { tick = 0; await new Promise(resolve => setTimeout(resolve, 0)); }
         }
-        
-        this.trackeriters += 1
-        this.emit('p', `[${x},${y},${color},1]`)
-        this.lastplace = Date.now()
-        // console.log(`[7p] placing: ${canvascolor} -> ${color}`)
-        return true
     }
+
+    public static async findAvailableBot(): Promise<Bot> {
+        const bots = seven.bots
+        var tick = 0
+        while (true) {
+            for (var i = 0; i < bots.length; i++) {
+                const bot = bots[i]
+                if (Date.now() - bot.lastplace >= seven.pixelspeed) {
+                    return bot
+                }
+            }
+            
+            tick += 1
+            if (tick == seven.tickspeed) { tick = 0; await new Promise(resolve => setTimeout(resolve, 0)); }
+        }
+    }    
 
 
     public createTracker() {
