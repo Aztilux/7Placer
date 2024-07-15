@@ -45,10 +45,6 @@ self.addEventListener('message', async (event) => {
             const pixelIndex = (y * canvas.width + x) * 4;
             const a = pixelData[pixelIndex + 3];
 
-            if (a < 1) {
-                continue; // water (Be careful on canvasses without preset.)
-            }
-
             const r = pixelData[pixelIndex];
             const g = pixelData[pixelIndex + 1];
             const b = pixelData[pixelIndex + 2];

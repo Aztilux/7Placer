@@ -62,6 +62,8 @@ export async function onBotMessage(event: any, bot: WSBot) {
               deleteAccount(botname)
               closeBot(bot) 
               return; 
+            } else if (message[1] == 16) {
+              closeBot(bot)
             }
             console.log(`[7p] [Bot ${botname}] Pixelplace WS error: ${message[1]}`);
             break
