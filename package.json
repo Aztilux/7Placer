@@ -19,8 +19,10 @@
   },
   "private": true,
   "dependencies": {
+    "@antiadmin/anticaptchaofficial": "^1.0.47",
     "jquery": "^3.7.1",
-    "jquery-ui": "^1.13.3"
+    "jquery-ui": "^1.13.3",
+    "puppeteer": "^22.11.2"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json}": [
