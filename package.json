@@ -1,7 +1,7 @@
 {
   "name": "7Placer",
   "description": "typescript pixelplace.io bot",
-  "version": "1.4.0b",
+  "version": "1.4.1a",
   "author": {
     "name": "Azti"
   },
@@ -43,7 +43,7 @@
     "ts-loader": "^9.5.1",
     "typescript": "^5.4.5",
     "userscript-metadata-webpack-plugin": "^0.4.0",
-    "webpack": "^5.91.0",
+    "webpack": "^5.96.1",
     "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^5.1.4",
     "webpack-livereload-plugin": "^3.0.2",
