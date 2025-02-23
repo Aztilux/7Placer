@@ -3,7 +3,6 @@ import { WSBot } from "../../bot/Bot";
 import "../../variables"
 import getPainting from "../../requests/get-painting";
 import { closeBot } from "../../bot/util/websocket";
-import requestLogin from "../../requests/login";
 
 const window2 = (window as any)
 var LocalAccounts = new Map<string, {authId: string; authKey: string; authToken: string;}>();
@@ -144,16 +143,4 @@ export function disconnect(username: string) {
     if (!bot) { console.log(`[7p] No bot connected with username ${username}`); return }
 
     closeBot(bot); 
-}
-
-// !! Private !!
-export function echo(message: string) {
-    for (const bot of window2.seven.bots) {
-        bot.emit('chat.message', `{"text":"${message}","mention":"","type":"global","target":"","color":0}`)
-    }
-}
-
-// !! Private !!
-export async function login(email: string, password: string, captcha?: string) {
-    await requestLogin(email, password, captcha)
 }

@@ -15,6 +15,4 @@ export default (window as any).seven = {
   deleteAccount: cmd.deleteAccount,
   connect: cmd.connect,
   disconnect: cmd.disconnect,
-  echo: cmd.echo,
-  login: cmd.login
 }
