@@ -32,8 +32,7 @@ export class Bot {
         const canvas = Canvas.instance
         return new Promise((resolve) => {
             const canvascolor = canvas.getColor(x, y);
-
-            if (canvascolor == color || canvascolor == 50) return resolve(true);
+            if (canvascolor == color || canvascolor == 200) return resolve(true);
             new Promise((resolve) => {
                 setTimeout(() => resolve(true), Math.max(0, seven.pixelspeed - (Date.now() - this.lastplace)));
             }).then(() => {
