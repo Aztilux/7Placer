@@ -36,28 +36,24 @@ export async function processColors() {
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
   const pixelData = imageData.data;
   const CanvasArray = Array.from({ length: canvas.width }, () => Array.from({ length: canvas.height }, () => -1));
-  const colorMap = new Map(colors.map((c, i) => [c, i]));
 	
-  	const area = canvas.width * canvas.height;
-	var pixelIndex = 0;
-	for (let i = 0; i < area; i++) {
-		const x = i % canvas.width;
-    	const y = (i / canvas.width) | 0;
+  for (let y = 0; y < canvas.height; y++) {
+	  for (let x = 0; x < canvas.width; x++) {
 		  if (waterArray[x][y] == 200) {
 			CanvasArray[x][y] = 200;
-			var pixelIndex = 0;
 			continue;
 		  };
+		  const pixelIndex = (y * canvas.width + x) * 4;
 
 		  const r = pixelData[pixelIndex];
 		  const g = pixelData[pixelIndex + 1];
 		  const b = pixelData[pixelIndex + 2];
 		  const colornum = (r << 16) | (g << 8) | b;
 
-		  CanvasArray[x][y] = colorMap.has(colornum) ? colorMap.get(colornum) : -1;
-
-		  pixelIndex += 4;
+		  const colorIndex = colors.indexOf(colornum);
+		  CanvasArray[x][y] = colorIndex;
 	  }
+  }
   console.log(CanvasArray);
   Canvas.instance.CanvasArray = CanvasArray;
   const finalTotalTime = performance.now() - startTotalTime;

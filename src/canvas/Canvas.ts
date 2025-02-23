@@ -34,7 +34,7 @@ export class Canvas {
 
     public getColor(x: number, y: number) {
       try { return this._CanvasArray[x][y] }
-      catch { return 50 };
+      catch { return 200 };
     }
 
     public updatePixel(x: number, y: number, color: number) {
