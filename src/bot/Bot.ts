@@ -27,17 +27,18 @@ export class Bot {
     public emit(event: any, params: any) {
         this.ws.send(`42["${event}",${params}]`)
     }
-
-    public async placePixel(x: number, y: number, color: number, client: boolean = false, tracker: boolean = true): Promise<boolean> {
-        var tick = 0
-        while (true) {
-            const canvas = Canvas.instance
+    
+    public async placePixel(x: number, y: number, color: number, tracker: boolean = true): Promise<boolean> {
+        const canvas = Canvas.instance
+        return new Promise((resolve) => {
             const canvascolor = canvas.getColor(x, y);
-            if (canvascolor == color || canvascolor == 50) return true;
-            if (Date.now() - this.lastplace >= seven.pixelspeed) {
+
+            if (canvascolor == color || canvascolor == 50) return resolve(true);
+            new Promise((resolve) => {
+                setTimeout(() => resolve(true), Math.max(0, seven.pixelspeed - (Date.now() - this.lastplace)));
+            }).then(() => {
                 this.emit('p', `[${x},${y},${color},1]`);
                 this.lastplace = Date.now();
-
                 if (tracker && this.trackeriters >= 6) {
                     $(this.tracker).css({ top: y, left: x, display: 'block' });
                     this.trackeriters = 0
@@ -45,12 +46,9 @@ export class Bot {
                 
                 // console.log(`[7p] placing: ${canvascolor} -> ${color}`)
                 this.trackeriters += 1
-                return true;
-            }
-            
-            tick += 1
-            if (tick == seven.tickspeed) { tick = 0; await new Promise(resolve => setTimeout(resolve, 0)); }
-        }
+                resolve(true);
+            })
+        })
     }
 
     public static async findAvailableBot(): Promise<Bot> {
