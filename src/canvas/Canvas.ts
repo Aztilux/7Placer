@@ -1,5 +1,5 @@
-import loadcanvas from "./util/canvasloader";
 import { canvascss } from "../css/style";
+import { processWater, processColors } from "./util/canvasloader";
 
 export class Canvas {
     public static isProcessed: boolean
@@ -8,10 +8,10 @@ export class Canvas {
     private _CanvasArray: any[]
     private static _instance: Canvas    
 
-    constructor() {
+    private constructor() {
       Canvas.ID = this.ParseID()
+      processColors()
       Canvas.isProcessed = false
-      loadcanvas(this)
       Canvas.customCanvas = this.createPreviewCanvas()
     }
 
