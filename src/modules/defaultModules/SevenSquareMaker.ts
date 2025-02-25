@@ -1,4 +1,4 @@
-import { Queue } from "./SevenQueue";
+import Queue from "./SevenQueue";
 
 export function BotSquare(x1: number, y1: number, x2: number, y2: number, color: number) {
     if (x2 < x1) [x1, x2] = [x2, x1]

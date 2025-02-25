@@ -1,6 +1,6 @@
 import Canvas from '../../canvas/Canvas';
 import '../../variables';
-import { Queue } from './SevenQueue';
+import Queue from './SevenQueue';
 import { colors } from '../../canvas/util/colors';
 
 function getColorDistance(c1: number, c2: number) {

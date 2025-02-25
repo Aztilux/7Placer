@@ -60,7 +60,7 @@ export class Canvas {
     }
 
 
-    public getColor(x: number, y: number) {
+    public getColor(x: number, y: number): number {
         try { return this.canvasArray[x][y] }
         catch { return 200 };
     }

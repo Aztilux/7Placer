@@ -4,6 +4,7 @@ import getPalive from "./palive";
 import { closeBot } from './websocket';
 import "../../variables";
 import { deleteAccount } from "../../auth/util/commands";
+import Protector from "../../modules/defaultModules/SevenProtect";
 
 const seven = (window as any).seven 
 // client
@@ -22,6 +23,7 @@ export function onClientMessage(event: any) {
                 const color = pixel[2]
                 const id = pixel[4]  
                 canvas.updatePixel(x, y, color)
+                Protector.checkPixel(x, y, color)
             }
             break
         case "canvas":

@@ -1,10 +1,11 @@
     import { Bot } from "../../bot/Bot"
     import Canvas from "../../canvas/Canvas"
     import '../../variables'
+    import Protector from "./SevenProtect"
 
     const seven = (window as any).seven
 
-    export class Queue {
+    export default class Queue {
         private static performance: number
 
         constructor() { 
@@ -20,8 +21,9 @@
             seven.queue = []
         }
 
-        public static async start() { // waiter waiter! I want .sort!
+        public static async start(): Promise<void> { // waiter waiter! I want .sort!
             const canvas = Canvas.instance
+            const protector = new Protector
             if (!canvas.isProcessed) { console.log('[7p] Error starting queue: Canvas has not been processed yet.'); Queue.stop(); return }
             seven.inprogress = true
 
@@ -33,11 +35,10 @@
                 await bot.placePixel(pixel.x, pixel.y, pixel.color)
                 seven.queue.shift()
                 if (seven.protect) {
-                    seven.queue.push(pixel)
+                    protector.protect(pixel.x, pixel.y, pixel.color)
                 }
                 if (seven.queue.length == 0) {
                     seven.inprogress = false
-                    Queue.stop()
                     console.log('[7p] Queue done.')
                 }
             }
