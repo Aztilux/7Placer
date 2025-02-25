@@ -48,6 +48,7 @@
             seven.inprogress = false
             const canvas = Canvas.instance
             canvas.previewCanvas.clearRect(0,0,3000,3000)
+            Protector.clear()
             Queue.clear();
         }
 

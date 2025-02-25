@@ -8,7 +8,7 @@ export default class Protector {
         Protector.protected.push({x: x, y: y, color: color})
     }
 
-    public clear() {
+    public static clear() {
         Protector.protected = []
     }
 

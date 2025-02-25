@@ -1,21 +1,21 @@
 const seven = (window as any).seven
-function sort(array: Array<{ x: number; y: number; color: number }>) {
+export default function sort(array: {x: number, y: number, color: number}[], order: string) {
     switch (seven.order) {
         case 'rand':
         array.sort(() => Math.random() - 0.5);
-        break;
+        return array;
     
         case 'colors':
         array.sort((a: { color: number }, b: { color: number }) => a.color - b.color);
-        break;
+        return array;
     
         case 'vertical':
         array.sort((a: { x: number }, b: { x: number }) => a.x - b.x);
-        break;
+        return array;
     
         case 'horizontal':
         array.sort((a: { y: number }, b: { y: number }) => a.y - b.y);
-        break;
+        return array;
 
         default:
         case 'circle':
@@ -26,6 +26,6 @@ function sort(array: Array<{ x: number; y: number; color: number }>) {
             const distanceB = Math.sqrt((b.x - CX) ** 2 + (b.y - CY) ** 2);
             return distanceA - distanceB;
         });
-        break;
+        return array;
     }
     }

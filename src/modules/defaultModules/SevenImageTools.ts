@@ -2,6 +2,7 @@ import Canvas from '../../canvas/Canvas';
 import '../../variables';
 import Queue from './SevenQueue';
 import { colors } from '../../canvas/util/colors';
+import sort from './SevenSorting';
 
 function getColorDistance(c1: number, c2: number) {
   // Image Color
@@ -71,6 +72,7 @@ export async function botImage(x: number, y: number, image: any | File) {
     const bitmap = await createImageBitmap(image)
     const processed = await ImageToPixels(bitmap)
     previewCanvasImage(x, y, image)
+    sort(processed, (window as any).seven.order)
     processed.forEach((pixel: { x: number; y: number; color: number; }) => 
       Queue.add(pixel.x + x, pixel.y + y, pixel.color)
     )
