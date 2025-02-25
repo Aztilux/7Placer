@@ -2,7 +2,7 @@ import Canvas from "../Canvas";
 import { colors } from "./colors";
 
 export async function processWater(): Promise<number[][]> { 
-  const image = await fetch('https://pixelplace.io/canvas/' + Canvas.ID + 'p.png?t200000=' + Date.now());
+  const image = await fetch('https://pixelplace.io/canvas/' + Canvas.instance.ID + 'p.png?t200000=' + Date.now());
   const blob = await image.blob();
   const bitmap = await createImageBitmap(blob);
   const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
@@ -62,7 +62,7 @@ export async function processColors() {
         }
     }
     console.log(CanvasArray);
-    Canvas.instance.CanvasArray = CanvasArray;
+    Canvas.instance.canvasArray = CanvasArray;
     const finalTotalTime = performance.now() - startTotalTime;
     const finalColorsTime = performance.now() - startColorsTime
     const finalWaterTime = startColorsTime - startTotalTime;

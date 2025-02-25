@@ -1,9 +1,7 @@
 import Canvas from '../../canvas/Canvas';
 import '../../variables';
-import Queue from './SevenQueue';
+import { Queue } from './SevenQueue';
 import { colors } from '../../canvas/util/colors';
-
-const seven = (window as any).seven
 
 function getColorDistance(c1: number, c2: number) {
   // Image Color
@@ -33,7 +31,8 @@ function findClosestColor(color: number) {
 }
 
 function previewCanvasImage (x: number, y: number, image: File) {
-  const ctx = Canvas.customCanvas
+  const canvas = Canvas.instance
+  const ctx = canvas.previewCanvas
   const img = new Image();
   img.onload = function() {
       ctx.drawImage(img, x, y);

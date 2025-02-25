@@ -1,6 +1,6 @@
 import { createDropArea } from "../../css/drop";
 import getClientMouse from "../util/getClientMouse";
-import Queue from "./SevenQueue";
+import { Queue } from "./SevenQueue";
 import { BotSquare } from "./SevenSquareMaker";
 
 var coord1: { x: any; y: any; } = null

@@ -77,7 +77,7 @@ export async function onBotMessage(event: any, bot: WSBot) {
   // start
   if (message.startsWith("0")) bot.ws.send('40')
   // auth
-  if (message.startsWith("40")) bot.ws.send(`42["init",{"authKey":"${bot.auth.authKey}","authToken":"${bot.auth.authToken}","authId":"${bot.auth.authId}","boardId":${Canvas.ID}}]`);
+  if (message.startsWith("40")) bot.ws.send(`42["init",{"authKey":"${bot.auth.authKey}","authToken":"${bot.auth.authToken}","authId":"${bot.auth.authId}","boardId":${Canvas.instance.ID}}]`);
   // keep alive
   if (message.startsWith("2")) bot.ws.send('3');
 }

@@ -2,57 +2,74 @@ import { canvascss } from "../css/style";
 import { processWater, processColors } from "./util/canvasloader";
 
 export class Canvas {
-    public static isProcessed: boolean
-    public static ID: number
-    public static customCanvas: any
-    private _CanvasArray: any[]
     private static _instance: Canvas    
+    private _customCanvas: any
+    private _isProcessed: boolean
+    private _ID: number
+    private _canvasArray: any[]
 
     private constructor() {
-      Canvas.ID = this.ParseID()
-      processColors()
-      Canvas.isProcessed = false
-      Canvas.customCanvas = this.createPreviewCanvas()
-    }
-
-    private ParseID(): number {
-      return parseInt(window.location.href.split("/").slice(-1)[0].split("-")[0]);
+        this._ID = this.ParseID()
+        this._isProcessed = false
+        this._customCanvas = this.newPreviewCanvas()
     }
 
     public static get instance() {
-      if (!Canvas._instance) Canvas._instance = new Canvas
-      return Canvas._instance
+        if (!Canvas._instance) {
+            Canvas._instance = new Canvas
+            processColors()
+        }
+        return Canvas._instance
     }
 
-    public set CanvasArray(array: any[]) {
-      this._CanvasArray = array
-      Canvas.isProcessed = true
+    private newPreviewCanvas() {
+        const canvas: any = $(`<canvas width="2500" height="2088">`).css(canvascss);
+        $('#canvas').ready(function() {
+            $('#painting-move').append(canvas)                        
+            });
+            const ctx = canvas[0].getContext("2d");
+            return ctx
     }
-    public get CanvasArray() {
-      return this._CanvasArray
+
+    private ParseID(): number {
+        return parseInt(window.location.href.split("/").slice(-1)[0].split("-")[0]);
     }
+
+    public get previewCanvas() {
+        return this._customCanvas
+    }
+    
+    public get canvasArray() {
+        return this._canvasArray
+    }
+
+    public get isProcessed() {
+        return this._isProcessed
+    }
+    public set isProcessed(bool: boolean) {
+        this._isProcessed = bool
+    }
+
+    public get ID() {
+        return this._ID
+    }
+
+    public set canvasArray(array: any[]) {
+        this._canvasArray = array
+        this.isProcessed = true
+    }
+
 
     public getColor(x: number, y: number) {
-      try { return this._CanvasArray[x][y] }
-      catch { return 200 };
+        try { return this.canvasArray[x][y] }
+        catch { return 200 };
     }
 
     public updatePixel(x: number, y: number, color: number) {
-            if (!Canvas.isProcessed) return
-            this.CanvasArray[x][y] = color
+            if (!this._isProcessed) return
+            this.canvasArray[x][y] = color
             // console.log(this.getColor(x, y), "->", color) 
     }
-
-    public createPreviewCanvas() {
-        const canvas: any = $(`<canvas width="2500" height="2088">`).css(canvascss);
-
-        $('#canvas').ready(function() {
-          $('#painting-move').append(canvas)                        
-        });
-        const ctx = canvas[0].getContext("2d");
-        return ctx
-    }
-
 
 }
 
