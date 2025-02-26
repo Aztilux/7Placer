@@ -2,9 +2,8 @@ import packageInfo from '../package.json';
 import { loadCss } from './util/ExternalLoader';
 
 // @ts-ignore (GLOBAL IMPORT)
-const context = require.context('./', true, /\*.ts/);
+const context = require.context('./', true, /^(?!.*global\.d).+/);
 context.keys().forEach(context);
-
 Object.defineProperty(window.console, 'log', {
   configurable: false,
   enumerable: true,
