@@ -13,6 +13,6 @@ export function BotSquare(x1: number, y1: number, x2: number, y2: number, color:
     }
     result = sort(result, (window as any).seven.order)
     result.forEach((pixel) => {
-      Queue.add(pixel.x, pixel.y, pixel.color)
+      Queue.add(pixel.x, pixel.y, pixel.color, true)
     })
 }

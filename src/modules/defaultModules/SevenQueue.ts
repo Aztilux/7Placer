@@ -1,4 +1,4 @@
-    import { Bot } from "../../bot/Bot"
+    import { Bot, Client } from "../../bot/Bot"
     import Canvas from "../../canvas/Canvas"
     import '../../variables'
     import Protector from "./SevenProtect"
@@ -12,9 +12,16 @@
             Queue.performance = performance.now()
         }
 
-        public static add(x: number, y: number, color: number) {
-            seven.queue.push({x: x, y: y, color: color})
+        public static add(x: number, y: number, color: number, protection: boolean, atStart: boolean = false, client: boolean = false) {
+            const pixel = { x: x, y: y, color: color, protected: protection, client: client }
+
+            if (atStart) { 
+                seven.queue.unshift(pixel) }
+            else {
+                seven.queue.push(pixel)
+            }
             if (seven.queue.length == 1) { Queue.start() }
+            
         }
         public static clear() {
             // console.log('Queue cleared: ', seven.queue)
@@ -31,10 +38,20 @@
                 console.log(performance.now() - Queue.performance)
                 Queue.performance = performance.now()
                 const pixel = seven.queue[0]
-                const bot = await Bot.findAvailableBot()
+
+                if (pixel.client) {
+                    var bot = Client.instance
+                } else {
+                    var bot = await Bot.findAvailableBot()
+                }
+                
                 await bot.placePixel(pixel.x, pixel.y, pixel.color)
-                seven.queue.shift()
-                if (seven.protect) {
+
+                // remove pixel from queue
+                var indexOfRemoval = seven.queue.indexOf(pixel);
+                seven.queue.splice(indexOfRemoval, 1);
+
+                if (pixel.protected && seven.protect) {
                     protector.protect(pixel.x, pixel.y, pixel.color)
                 }
                 if (seven.queue.length == 0) {

@@ -74,6 +74,6 @@ export async function botImage(x: number, y: number, image: any | File) {
     previewCanvasImage(x, y, image)
     sort(processed, (window as any).seven.order)
     processed.forEach((pixel: { x: number; y: number; color: number; }) => 
-      Queue.add(pixel.x + x, pixel.y + y, pixel.color)
+      Queue.add(pixel.x + x, pixel.y + y, pixel.color, true)
     )
 }
