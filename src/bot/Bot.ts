@@ -28,26 +28,28 @@ export class Bot {
         this.ws.send(`42["${event}",${params}]`)
     }
     
-    public async placePixel(x: number, y: number, color: number, tracker: boolean = true): Promise<boolean> {
-        const canvas = Canvas.instance
-        return new Promise((resolve) => {
-            const canvascolor = canvas.getColor(x, y);
-            if (canvascolor == color || canvascolor == 200) return resolve(true);
-            new Promise((resolve) => {
-                setTimeout(() => resolve(true), Math.max(0, seven.pixelspeed - (Date.now() - this.lastplace)));
-            }).then(() => {
-                this.emit('p', `[${x},${y},${color},1]`);
-                this.lastplace = Date.now();
-                if (tracker && this.trackeriters >= 6) {
-                    $(this.tracker).css({ top: y, left: x, display: 'block' });
-                    this.trackeriters = 0
-                }
-                
-                // console.log(`[7p] placing: ${canvascolor} -> ${color}`)
-                this.trackeriters += 1
-                resolve(true);
-            })
-        })
+    public async placePixel(x: number, y: number, color: number, client: boolean = false, tracker: boolean = true): Promise<boolean> {
+        const canvas = Canvas.instance;
+        const canvascolor = canvas.getColor(x, y);
+    
+        if (canvascolor == color || canvascolor == 200) {
+            return true;
+        }
+    
+        while (Date.now() - this.lastplace < seven.pixelspeed) {
+            await new Promise(resolve => setTimeout(resolve, 0));
+        }
+    
+        this.emit('p', `[${x},${y},${color},1]`);
+        this.lastplace = Date.now();
+    
+        if (tracker && this.trackeriters >= 6) {
+            $(this.tracker).css({ top: y, left: x, display: 'block' });
+            this.trackeriters = 0;
+        }
+    
+        this.trackeriters += 1;
+        return true;
     }
 
     public static async findAvailableBot(): Promise<Bot> {
@@ -57,6 +59,7 @@ export class Bot {
             for (var i = 0; i < bots.length; i++) {
                 const bot = bots[i]
                 if (Date.now() - bot.lastplace >= seven.pixelspeed) {
+                    console.log(`[7p] found available bot: ${bot.username}, ${ Date.now() - bot.lastplace }`)
                     return bot
                 }
             }
