@@ -35,7 +35,7 @@
             seven.inprogress = true
 
             while (seven.inprogress) {
-                console.log(performance.now() - Queue.performance)
+                // console.log(performance.now() - Queue.performance)
                 Queue.performance = performance.now()
                 const pixel = seven.queue[0]
 
@@ -47,7 +47,6 @@
                 
                 await bot.placePixel(pixel.x, pixel.y, pixel.color)
 
-                // remove pixel from queue
                 var indexOfRemoval = seven.queue.indexOf(pixel);
                 seven.queue.splice(indexOfRemoval, 1);
 

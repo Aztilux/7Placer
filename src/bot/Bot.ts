@@ -59,7 +59,7 @@ export class Bot {
             for (var i = 0; i < bots.length; i++) {
                 const bot = bots[i]
                 if (Date.now() - bot.lastplace >= seven.pixelspeed) {
-                    console.log(`[7p] found available bot: ${bot.username}, ${ Date.now() - bot.lastplace }`)
+                    // console.log(`[7p] found available bot: ${bot.username}, ${ Date.now() - bot.lastplace }`)
                     return bot
                 }
             }
@@ -94,7 +94,6 @@ export class WSBot extends Bot {
 
     constructor(auth: Auth, username: string) {
         super()
-        if (!username || !auth) { console.error("[7p ERROR]: 'auth' and 'username' should both be in the constructor arguments."); return }
         this._auth = auth;
         this.username = username
         this.startBot()
