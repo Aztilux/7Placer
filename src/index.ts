@@ -1,4 +1,5 @@
 import packageInfo from '../package.json';
+import Canvas from './canvas/Canvas';
 import { loadCss } from './util/ExternalLoader';
 
 // @ts-ignore (GLOBAL IMPORT)
@@ -18,4 +19,5 @@ window.onload = () => {
     Toastify ({
         text: '7Placer Loaded!',
     }).showToast();
+    Canvas.instance
 }

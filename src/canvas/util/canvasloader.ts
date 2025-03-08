@@ -1,33 +1,38 @@
 import Canvas from "../Canvas";
 import { colors } from "./colors";
 
-export async function processWater(): Promise<number[][]> { 
-  const image = await fetch('https://pixelplace.io/canvas/' + Canvas.instance.ID + 'p.png?t200000=' + Date.now());
-  const blob = await image.blob();
-  const bitmap = await createImageBitmap(blob);
-  const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
-  var waterArray = Array.from({ length: canvas.width }, () => Array.from({ length: canvas.height }, () => 1));
-  const context = canvas.getContext('2d');
-  context.drawImage(bitmap, 0, 0, bitmap.width, bitmap.height);
-  const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-  return new Promise((resolve) => {
-    if (bitmap.width == 1 && bitmap.height == 1) { // custom canvases ?
-        resolve(waterArray);
+export async function processWater(): Promise<number[][]> {
+    var image = await fetch('https://pixelplace.io/canvas/' + Canvas.instance.ID + 'p.png?t200000=' + Date.now());
+    if (!image.ok) {
+        const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+        var waterArray = Array.from({ length: canvas.width }, () => Array.from({ length: canvas.height }, () => 1));
+        return waterArray
     }
-    for (let y = 0; y < canvas.height; y++) {
-      for (let x = 0; x < canvas.width; x++) {
-          const index = (y * imageData.width + x) * 4;
-          var r = imageData.data[index];
-          var g = imageData.data[index + 1];
-          var b = imageData.data[index + 2];
-          if (r == 204 && g == 204 && b == 204) {
-            waterArray[x][y] = 200;
-          }
-      }
-    }
-    console.log(waterArray);
-    resolve(waterArray);    
-  }) 
+    const blob = await image.blob();
+    const bitmap = await createImageBitmap(blob);
+    const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
+    var waterArray = Array.from({ length: canvas.width }, () => Array.from({ length: canvas.height }, () => 1));
+    const context = canvas.getContext('2d');
+    context.drawImage(bitmap, 0, 0, bitmap.width, bitmap.height);
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    return new Promise((resolve) => {
+        if (bitmap.width == 1 && bitmap.height == 1) { // custom canvases ?
+            resolve(waterArray);
+        }
+        for (let y = 0; y < canvas.height; y++) {
+        for (let x = 0; x < canvas.width; x++) {
+            const index = (y * imageData.width + x) * 4;
+            var r = imageData.data[index];
+            var g = imageData.data[index + 1];
+            var b = imageData.data[index + 2];
+            if (r == 204 && g == 204 && b == 204) {
+                waterArray[x][y] = 200;
+            }
+        }
+        }
+        console.log(waterArray);
+        resolve(waterArray);    
+    }) 
 }
 
 export async function processColors() {
