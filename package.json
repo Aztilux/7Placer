@@ -1,7 +1,7 @@
 {
   "name": "7Placer",
   "description": "typescript pixelplace.io bot",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "author": {
     "name": "Azti"
   },
@@ -19,9 +19,7 @@
   },
   "private": true,
   "dependencies": {
-    "@antiadmin/anticaptchaofficial": "^1.0.47",
-    "jquery": "^3.7.1",
-    "jquery-ui": "^1.13.3"
+    "7Placer": "file:"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json}": [

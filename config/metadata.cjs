@@ -14,7 +14,7 @@ module.exports = {
     `https://update.greasyfork.org/scripts/498080/1395134/Hacktimer.js`,
     `https://pixelplace.io/js/jquery.min.js?v2=1`,
     `https://pixelplace.io/js/jquery-ui.min.js?v2=1`,
-    `https://cdn.jsdelivr.net/npm/toastify-js`,
+    `https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.6.1/toastify.js`,
   ],
   grant: "none",
   "run-at": "document-start",
