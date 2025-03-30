@@ -12,7 +12,7 @@ export async function processWater(): Promise<number[][]> {
     const bitmap = await createImageBitmap(blob);
     const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
     var waterArray = Array.from({ length: canvas.width }, () => Array.from({ length: canvas.height }, () => 1));
-    const context = canvas.getContext('2d');
+    const context = canvas.getContext('2d', { "willReadFrequently": true });
     context.drawImage(bitmap, 0, 0, bitmap.width, bitmap.height);
     const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
     return new Promise((resolve) => {
@@ -31,8 +31,8 @@ export async function processWater(): Promise<number[][]> {
         }
         }
         console.log(waterArray);
-        resolve(waterArray);    
-    }) 
+        resolve(waterArray);
+    })
 }
 
 export async function processColors() {
@@ -42,14 +42,14 @@ export async function processColors() {
 
     const startColorsTime = performance.now();
     const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { "willReadFrequently": true });
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const pixelData = imageData.data;
     var CanvasArray = Array.from({ length: canvas.width }, () => Array.from({ length: canvas.height }, () => 1));
     if (waterArray.length > 1) {
         CanvasArray = waterArray;
     }
-            
+
     for (let y = 0; y < canvas.height; y++) {
         for (let x = 0; x < canvas.width; x++) {
             if (CanvasArray[x][y] == 200) {
