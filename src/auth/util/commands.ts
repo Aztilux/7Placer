@@ -2,7 +2,7 @@ import Auth from "../Auth";
 import { WSBot } from "../../bot/Bot";
 import "../../variables"
 import getPainting from "../../requests/get-painting";
-import { closeBot } from "../../bot/util/websocket";
+import { closeBot, createBot } from "../../bot/util/websocket";
 
 const window2 = (window as any)
 var LocalAccounts = new Map<string, {authId: string; authKey: string; authToken: string;}>();
@@ -59,8 +59,8 @@ export async function saveAccount() {
 // logs saved auths
 export function getAccounts() {
     storageGet();
-    if (!LocalAccounts || LocalAccounts.size == 0) { 
-        console.log('No accounts found'); 
+    if (!LocalAccounts || LocalAccounts.size == 0) {
+        console.log('No accounts found');
         return;
     }
     console.log(`Found ${LocalAccounts.size} accounts`);
@@ -93,7 +93,7 @@ export function deleteAccount(identifier: string | number) {
         console.log(`Deleted account ${identifier}`);
         console.log(LocalAccounts);
     }
-    
+
     storagePush();
 }
 
@@ -113,7 +113,7 @@ export async function connect(username: string) {
 
             if (connectedbot) { console.log(`[7p] Account ${username} is already connected.`); continue; }
 
-            new WSBot(auth, username);
+            createBot(auth, username);
             await delay(500);
         }
         return
@@ -123,7 +123,7 @@ export async function connect(username: string) {
     if (connectedbot) { console.log(`[7p] Account ${username} is already connected.`); return; }
 
     const auth = new Auth(account);
-    new WSBot(auth, username);
+    createBot(auth, username);
 }
 
 
@@ -142,5 +142,5 @@ export function disconnect(username: string) {
 
     if (!bot) { console.log(`[7p] No bot connected with username ${username}`); return }
 
-    closeBot(bot); 
+    closeBot(bot);
 }

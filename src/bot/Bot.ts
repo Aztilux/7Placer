@@ -1,53 +1,56 @@
-import { hookBot } from  "./util/websocket"
+import { closeBot } from  "./util/websocket"
 import Canvas from "../canvas/Canvas";
 import Auth from "../auth/Auth";
 import '../variables'
 import '../css/style'
 import { trackercss } from "../css/style";
 import getPainting from "../requests/get-painting";
+import { MessageHandler } from "./util/MessageHandler";
+import Protector from "../modules/defaultModules/SevenProtect";
+import getPalive from "./util/palive";
+import { deleteAccount } from "../auth/util/commands";
 
 const seven = (window as any).seven
 export class Bot {
-  
-    public static botIndex: number = 0
-    private trackeriters: number = 0
-    private _ws: WebSocket
-    public tracker: JQuery<HTMLElement>;
+
     public username: string
+    private _ws: WebSocket
+    public handler: MessageHandler
+    public tracker: JQuery<HTMLElement>;
+    private trackeriters: number = 0
     public paliveServerTime: number
     public lastplace: number
-    public botid: number
 
-    constructor() {
+    constructor(websocket: WebSocket) {
+        this._ws = websocket
         this.lastplace = Date.now();
-        this.botid = Bot.botIndex;
-        Bot.botIndex += 1; // id for next bot
-    }   
+        this.handler = new MessageHandler(this, this.ws)
+    }
 
     public emit(event: any, params: any) {
         this.ws.send(`42["${event}",${params}]`)
     }
-    
+
     public async placePixel(x: number, y: number, color: number, client: boolean = false, tracker: boolean = true): Promise<boolean> {
         const canvas = Canvas.instance;
         const canvascolor = canvas.getColor(x, y);
-    
+
         if (canvascolor == color || canvascolor == 200) {
             return true;
         }
-    
+
         while (Date.now() - this.lastplace < seven.pixelspeed) {
             await new Promise(resolve => setTimeout(resolve, 0));
         }
-    
+
         this.emit('p', `[${x},${y},${color},1]`);
         this.lastplace = Date.now();
-    
+
         if (tracker && this.trackeriters >= 6) {
             $(this.tracker).css({ top: y, left: x, display: 'block' });
             this.trackeriters = 0;
         }
-    
+
         this.trackeriters += 1;
         return true;
     }
@@ -63,25 +66,22 @@ export class Bot {
                     return bot
                 }
             }
-            
+
             tick += 1
             if (tick == seven.tickspeed) { tick = 0; await new Promise(resolve => setTimeout(resolve, 0)); }
         }
-    }    
+    }
 
 
     public createTracker() {
         const tracker = $('<div class="track" id="bottracker">').text(`[7P] ${this.username}`).css(trackercss)
         $('#canvas').ready(function() {
             // console.log(`[7p] created tracker: ${name}`)
-            $('#painting-move').append(tracker)                        
+            $('#painting-move').append(tracker)
         });
-        return tracker              
+        return tracker
     }
 
-    public set ws(wss: WebSocket) {
-        this._ws = wss
-    }
     public get ws(): WebSocket {
         return this._ws
     }
@@ -92,21 +92,56 @@ export class WSBot extends Bot {
     public username: string;
     public generalinfo: any
 
-    constructor(auth: Auth, username: string) {
-        super()
+    constructor(auth: Auth, username: string, websocket: WebSocket) {
+        super(websocket)
         this._auth = auth;
         this.username = username
         this.startBot()
     }
 
     private async startBot() {
-        this.generalinfo = await getPainting(this.auth.authId, this.auth.authKey, this.auth.authToken)  
+        this.generalinfo = await getPainting(this.auth.authId, this.auth.authKey, this.auth.authToken)
         this.tracker = this.createTracker()
-        this.ws = await hookBot(this);
+        this.internalListeners()
     }
 
     public get auth(): Auth {
         return this._auth
+    }
+
+    private internalListeners() {
+        this.handler.on('server_time', (data) => {
+            this.paliveServerTime = data[1]; // stores servertime for palive
+        })
+        this.handler.on('ping.alive', () => {
+                const hash = getPalive(this.paliveServerTime, this.botid);
+                console.log('[7p]', this.username, ': pong =', hash, this.botid)
+                this.emit('pong.alive', `"${hash}"`);
+        })
+        this.handler.on('throw.error', (data) => {
+                if (data[1] == 49) {
+                console.log(`[7p] [Bot ${this.username}] Error (${data[1]}): This auth is not valid! Deleting account from saved accounts...`);
+                deleteAccount(this.username)
+                closeBot(this)
+                return;
+                } else if (data[1] == 16) {
+                closeBot(this)
+                }
+                console.log(`[7p] [Bot ${this.username}] Pixelplace WS error: ${data[1]}`);
+        })
+        this.handler.on('canvas', () => {
+            console.log(`[7p] Succesfully connected to bot ${this.username}`)
+            seven.bots.push(this);
+        })
+        this.handler.on(2, () => {
+            this.ws.send('3')
+        })
+        this.handler.on('start', () => {
+            this.ws.send('40')
+        })
+        this.handler.on('init', () => {
+            this.emit('init', `{"authKey":"${this.auth.authKey}","authToken":"${this.auth.authToken}","authId":"${this.auth.authId}","boardId":${Canvas.instance.ID}}`)
+        })
     }
 }
 
@@ -114,15 +149,42 @@ export class Client extends Bot {
     public username: string;
     public static instance: Client
 
-    constructor() {
-        super()
-        this.username = 'Client'
+    constructor(websocket: WebSocket) {
+        super(websocket)
         Client.instance = this
+        this.username = 'Client'
         this.tracker = this.createTracker()
         seven.bots.push(this);
+        this.internalListeners()
     }
 
-    public static get Client(): Bot {
+    public static get Client(): Client {
         return Client.instance
     }
+
+    private internalListeners() {
+        // Bot canvas array updater
+        this.handler.on('p', (data) => {
+            for (const pixel of data[1]) {
+                const canvas = Canvas.instance
+                const x = pixel[0]
+                const y = pixel[1]
+                const color = pixel[2]
+                const id = pixel[4]
+                canvas.updatePixel(x, y, color)
+                Protector.checkPixel(x, y, color)
+            }
+        })
+        // Rewrites some pixels after loading (I think because of cache lag)
+        this.handler.on("canvas", (data) => {
+            for (const pixel of data[1]) {
+                const canvas = Canvas.instance
+                const x = pixel[0]
+                const y = pixel[1]
+                const color = pixel[2]
+                canvas.updatePixel(x, y, color)
+            }
+        })
+    }
+
 }
