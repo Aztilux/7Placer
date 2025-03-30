@@ -1,7 +1,7 @@
 import * as cmd from './auth/util/commands'
 
 (window as any).seven = {
-    bots: [],
+    bots: new Map(),
     pixelspeed: 21,
     queue: [],
     inprogress: false,

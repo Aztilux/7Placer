@@ -2,7 +2,7 @@ import Auth from "../Auth";
 import { WSBot } from "../../bot/Bot";
 import "../../variables"
 import getPainting from "../../requests/get-painting";
-import { closeBot, createBot } from "../../bot/util/websocket";
+import { createBot } from "../../bot/util/websocket";
 
 const window2 = (window as any)
 var LocalAccounts = new Map<string, {authId: string; authKey: string; authToken: string;}>();
@@ -135,12 +135,12 @@ export function disconnect(username: string) {
     if (username == 'all') {
         if (window2.seven.bots.length == 1) { console.log('[7p] No bots connected.'); return; }
         for (const bot of window2.seven.bots) {
-            closeBot(bot);
+            bot.kill();
         }
         return
     }
 
     if (!bot) { console.log(`[7p] No bot connected with username ${username}`); return }
 
-    closeBot(bot);
+    bot.kill()
 }

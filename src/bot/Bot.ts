@@ -1,4 +1,3 @@
-import { closeBot } from  "./util/websocket"
 import Canvas from "../canvas/Canvas";
 import Auth from "../auth/Auth";
 import '../variables'
@@ -31,6 +30,13 @@ export class Bot {
         this.ws.send(`42["${event}",${params}]`)
     }
 
+    public kill() {
+        ((window as any).seven.bots as Map<string, Bot>).delete(this.username)
+        if (this._ws.readyState == 1) {
+            this._ws.close()
+        }
+    }
+
     public async placePixel(x: number, y: number, color: number, client: boolean = false, tracker: boolean = true): Promise<boolean> {
         const canvas = Canvas.instance;
         const canvascolor = canvas.getColor(x, y);
@@ -56,20 +62,20 @@ export class Bot {
     }
 
     public static async findAvailableBot(): Promise<Bot> {
-        const bots = seven.bots
+        const bots = (seven.bots as Map<string, Bot>)
         var tick = 0
         while (true) {
-            for (var i = 0; i < bots.length; i++) {
-                const bot = bots[i]
+            for (const [_, bot] of bots) {
                 if (Date.now() - bot.lastplace >= seven.pixelspeed) {
-                    // console.log(`[7p] found available bot: ${bot.username}, ${ Date.now() - bot.lastplace }`)
-                    return bot
+                    // console.log(`[7p] found available bot: ${bot.username}, ${ Date.now() - bot.lastplace }`);
+                    return bot;
                 }
-            }
+            };
 
             tick += 1
             if (tick == seven.tickspeed) { tick = 0; await new Promise(resolve => setTimeout(resolve, 0)); }
-        }
+        };
+
     }
 
 
@@ -113,19 +119,19 @@ export class WSBot extends Bot {
         this.handler.on('server_time', (data) => {
             this.paliveServerTime = data[1]; // stores servertime for palive
         })
-        this.handler.on('ping.alive', () => {
-                const hash = getPalive(this.paliveServerTime, this.botid);
-                console.log('[7p]', this.username, ': pong =', hash, this.botid)
-                this.emit('pong.alive', `"${hash}"`);
-        })
+        // this.handler.on('ping.alive', () => {
+        //         const hash = getPalive(this.paliveServerTime, this.botid);
+        //         console.log('[7p]', this.username, ': pong =', hash, this.botid)
+        //         this.emit('pong.alive', `"${hash}"`);
+        // })
         this.handler.on('throw.error', (data) => {
                 if (data[1] == 49) {
                 console.log(`[7p] [Bot ${this.username}] Error (${data[1]}): This auth is not valid! Deleting account from saved accounts...`);
                 deleteAccount(this.username)
-                closeBot(this)
+                this.kill()
                 return;
                 } else if (data[1] == 16) {
-                closeBot(this)
+                this.kill()
                 }
                 console.log(`[7p] [Bot ${this.username}] Pixelplace WS error: ${data[1]}`);
         })
@@ -150,16 +156,21 @@ export class Client extends Bot {
     public static instance: Client
 
     constructor(websocket: WebSocket) {
-        super(websocket)
-        Client.instance = this
-        this.username = 'Client'
-        this.tracker = this.createTracker()
-        seven.bots.push(this);
-        this.internalListeners()
-    }
+        super(websocket);
+        Client.instance = this;
+        this.start();
+    };
 
     public static get Client(): Client {
-        return Client.instance
+        return Client.instance;
+    };
+
+    private start() {
+        this.username = 'Client';
+        this.tracker = this.createTracker();
+        this.internalListeners();
+        let bots = ((window as any).seven.bots as Map<string, Bot>)
+        bots.set(this.username, this)
     }
 
     private internalListeners() {
