@@ -2,7 +2,7 @@ import Canvas from '../../canvas/Canvas';
 import '../../variables';
 import Queue from './Queue';
 import { colors } from '../../canvas/util/colors';
-import sort from './SevenSorting';
+import sort from './Sorting';
 
 export function hex2rgb(hex: string) {
   const r = parseInt(hex.slice(1, 3), 16);

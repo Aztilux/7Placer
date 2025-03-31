@@ -1,5 +1,5 @@
 import Queue from "./Queue";
-import sort from "./SevenSorting";
+import sort from "./Sorting";
 
 export function BotSquare(x1: number, y1: number, x2: number, y2: number, color: number) {
     var result: {x: number, y: number, color: number}[] = []
