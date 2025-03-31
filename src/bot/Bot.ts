@@ -5,7 +5,7 @@ import '../GUI/style'
 import { trackercss } from "../GUI/style";
 import getPainting from "../requests/get-painting";
 import { MessageHandler } from "./util/MessageHandler";
-import Protector from "../modules/defaultModules/SevenProtect";
+import Protector from "../modules/defaultModules/Protect";
 import getPalive from "./util/palive";
 import { deleteAccount } from "../auth/util/commands";
 

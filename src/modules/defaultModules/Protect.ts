@@ -1,5 +1,5 @@
 import Canvas from "../../canvas/Canvas"
-import Queue from "./SevenQueue"
+import Queue from "./Queue"
 
 export default class Protector {
     private static protected: Array<{x: number, y: number, color: number}> = []
@@ -21,7 +21,7 @@ export default class Protector {
             if (pixel.x == x && pixel.y == y) { return true }
             return false
         }
-        
+
         function isSameColor(pixel: {x: number, y: number, color: number}): boolean {
             const canvasColor = canvas.getColor(x, y)
             if (canvasColor == pixel.color) { return true }
@@ -35,4 +35,4 @@ export default class Protector {
         })
     }
 
-}   
+}

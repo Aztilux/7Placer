@@ -1,6 +1,6 @@
 import Canvas from '../../canvas/Canvas';
 import '../../variables';
-import Queue from './SevenQueue';
+import Queue from './Queue';
 import { colors } from '../../canvas/util/colors';
 import sort from './SevenSorting';
 
@@ -38,7 +38,7 @@ function previewCanvasImage (x: number, y: number, image: File) {
   img.onload = function() {
       ctx.drawImage(img, x, y);
   };
-  img.src = URL.createObjectURL(image); 
+  img.src = URL.createObjectURL(image);
 }
 
 export async function ImageToPixels(image: any) {
@@ -48,7 +48,7 @@ export async function ImageToPixels(image: any) {
   ctx.drawImage(image, 0, 0, image.width, image.height);
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
   const pixelData = imageData.data;
-  
+
   for (let y = 0; y < canvas.height; y++) {
     for (let x = 0; x < canvas.width; x++) {
       const pixelIndex = (y * canvas.width + x) * 4;
@@ -64,7 +64,7 @@ export async function ImageToPixels(image: any) {
       result.push({x, y, color});
     }
   }
-  
+
   return result;
 }
 
@@ -73,7 +73,7 @@ export async function botImage(x: number, y: number, image: any | File) {
     const processed = await ImageToPixels(bitmap)
     previewCanvasImage(x, y, image)
     sort(processed, (window as any).seven.order)
-    processed.forEach((pixel: { x: number; y: number; color: number; }) => 
+    processed.forEach((pixel: { x: number; y: number; color: number; }) =>
       Queue.add(pixel.x + x, pixel.y + y, pixel.color, true)
     )
 }

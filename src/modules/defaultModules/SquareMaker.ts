@@ -1,4 +1,4 @@
-import Queue from "./SevenQueue";
+import Queue from "./Queue";
 import sort from "./SevenSorting";
 
 export function BotSquare(x1: number, y1: number, x2: number, y2: number, color: number) {

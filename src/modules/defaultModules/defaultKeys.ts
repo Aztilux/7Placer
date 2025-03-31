@@ -1,7 +1,7 @@
 import { createDropArea } from "../../GUI/drop";
 import getClientMouse from "../util/getClientMouse";
-import Queue from "./SevenQueue";
-import { BotSquare } from "./SevenSquareMaker";
+import Queue from "./Queue";
+import { BotSquare } from "./SquareMaker";
 
 var coord1: { x: any; y: any; } = null
 $(document).on('keyup', function(event) {

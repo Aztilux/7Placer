@@ -1,5 +1,5 @@
 import { drop } from './style'
-import { botImage, ImageToPixels } from '../modules/defaultModules/SevenImageTools'
+import { botImage, ImageToPixels } from '../modules/defaultModules/ImageTools'
 import getClientMouse from '../modules/util/getClientMouse'
 
 export function createDropArea() {
@@ -8,13 +8,13 @@ export function createDropArea() {
     $('body').append( dropobject )
 
     dropobject.on("click", function() {
-      dropobject.remove() 
+      dropobject.remove()
     })
 
     dropobject.on("drop", async function(event) {
         event.preventDefault(); event.stopPropagation();
         const image = event.originalEvent.dataTransfer.files[0]
-        dropobject.remove() 
+        dropobject.remove()
         await botImage(x, y, image)
         // console.log(image)
     }).on('dragover', false);

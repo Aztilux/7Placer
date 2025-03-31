@@ -1,7 +1,7 @@
     import { Bot, Client } from "../../bot/Bot"
     import Canvas from "../../canvas/Canvas"
     import '../../variables'
-    import Protector from "./SevenProtect"
+    import Protector from "./Protect"
 
     const seven = (window as any).seven
 

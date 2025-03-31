@@ -1,4 +1,4 @@
-export * from './SevenImageTools'
-export * from './SevenQueue'
-export * from './SevenSquareMaker'
+export * from './ImageTools'
+export * from './Queue'
+export * from './SquareMaker'
 export * from './defaultKeys'
