@@ -1,8 +1,8 @@
 import Canvas from "../canvas/Canvas";
 import Auth from "../auth/Auth";
 import '../variables'
-import '../css/style'
-import { trackercss } from "../css/style";
+import '../GUI/style'
+import { trackercss } from "../GUI/style";
 import getPainting from "../requests/get-painting";
 import { MessageHandler } from "./util/MessageHandler";
 import Protector from "../modules/defaultModules/SevenProtect";

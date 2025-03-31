@@ -1,8 +1,8 @@
-import { canvascss } from "../css/style";
+import { canvascss } from "../GUI/style";
 import { processWater, processColors } from "./util/canvasloader";
 
 export class Canvas {
-    private static _instance: Canvas    
+    private static _instance: Canvas
     private _customCanvas: any
     private _isProcessed: boolean
     private _ID: number
@@ -25,7 +25,7 @@ export class Canvas {
     private newPreviewCanvas() {
         const canvas: any = $(`<canvas width="2500" height="2088">`).css(canvascss);
         $('#canvas').ready(function() {
-            $('#painting-move').append(canvas)                        
+            $('#painting-move').append(canvas)
             });
             const ctx = canvas[0].getContext("2d");
             return ctx
@@ -38,7 +38,7 @@ export class Canvas {
     public get previewCanvas() {
         return this._customCanvas
     }
-    
+
     public get canvasArray() {
         return this._canvasArray
     }
@@ -68,7 +68,7 @@ export class Canvas {
     public updatePixel(x: number, y: number, color: number) {
             if (!this._isProcessed) return
             this.canvasArray[x][y] = color
-            // console.log(this.getColor(x, y), "->", color) 
+            // console.log(this.getColor(x, y), "->", color)
     }
 
 }

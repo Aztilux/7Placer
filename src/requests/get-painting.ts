@@ -1,6 +1,6 @@
 import getCookie from "./getCookie";
 import Canvas from "../canvas/Canvas";
-import { canvascss } from "../css/style";
+import { canvascss } from "../GUI/style";
 export default async function getPainting(authId: string, authKey: string, authToken: string): Promise<any> {
   const canvas = Canvas.instance;
   const originalAuthId = getCookie('authId');

@@ -1,4 +1,4 @@
-import { createDropArea } from "../../css/drop";
+import { createDropArea } from "../../GUI/drop";
 import getClientMouse from "../util/getClientMouse";
 import Queue from "./SevenQueue";
 import { BotSquare } from "./SevenSquareMaker";
@@ -15,13 +15,13 @@ $(document).on('keyup', function(event) {
         case (66):
           if (!event.altKey) return
           createDropArea()
-          break               
+          break
         case 88:
           const [x, y, color] = getClientMouse()
           if (coord1 == null) { coord1 = {x: x, y: y}; return; }
           BotSquare(coord1.x, coord1.y, x, y, color)
           coord1 = null
-          break                   
-        // add more 
+          break
+        // add more
     }
 });
