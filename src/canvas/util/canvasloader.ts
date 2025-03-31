@@ -60,9 +60,8 @@ export async function processColors() {
             const r = pixelData[pixelIndex];
             const g = pixelData[pixelIndex + 1];
             const b = pixelData[pixelIndex + 2];
-            const colornum = (r << 16) | (g << 8) | b;
 
-            const colorIndex = colors.indexOf(colornum);
+            const colorIndex = colors.indexOf({r, g, b});
             CanvasArray[x][y] = colorIndex;
         }
     }

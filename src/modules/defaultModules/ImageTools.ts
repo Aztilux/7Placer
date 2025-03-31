@@ -4,19 +4,20 @@ import Queue from './Queue';
 import { colors } from '../../canvas/util/colors';
 import sort from './SevenSorting';
 
-function getColorDistance(c1: number, c2: number) {
-  // Image Color
-  const r1 = (c1 >> 16) & 0xFF;
-  const g1 = (c1 >> 8) & 0xFF;
-  const b1 = c1 & 0xFF;
-  // Pixelplace Color
-  const r2 = (c2 >> 16) & 0xFF;
-  const g2 = (c2 >> 8) & 0xFF;
-  const b2 = c2 & 0xFF;
-  return (r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2;
+export function hex2rgb(hex: string) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+
+  // return {r, g, b}
+  return { r, g, b };
 }
 
-function findClosestColor(color: number) {
+function getColorDistance(c1: {r: number, g: number, b: number}, c2: {r: number, g: number, b: number}) {
+  return (c1.r - c2.r) ** 2 + (c1.g - c2.g) ** 2 + (c1.b - c2.b) ** 2;
+}
+
+function findClosestColor(color: {r: number, g: number, b: number}) {
   let minDistance = Infinity;
   let colorNumber: number
   let index = 0
@@ -56,11 +57,10 @@ export async function ImageToPixels(image: any) {
       const g = pixelData[pixelIndex + 1];
       const b = pixelData[pixelIndex + 2];
       const a = pixelData[pixelIndex + 3];
-      const colornum = (r << 16) | (g << 8) | b;
       if (a < 1) {
         continue; // ignore transparent pixels
       }
-      const color = findClosestColor(colornum);
+      const color = findClosestColor({r, g, b});
       result.push({x, y, color});
     }
   }
