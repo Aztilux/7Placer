@@ -9,7 +9,7 @@ module.exports = {
   description: "typescript pixelplace.io bot",
   version: version,
   author: author,
-  match: "https://pixelplace.io/*",
+  include: '/^https:\\/\\/pixelplace.io\\/\\d+-/',
   require: [
     `https://update.greasyfork.org/scripts/498080/1395134/Hacktimer.js`,
     `https://pixelplace.io/js/jquery.min.js?v2=1`,
