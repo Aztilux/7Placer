@@ -49,7 +49,6 @@ export async function processColors() {
     if (waterArray.length > 1) {
         CanvasArray = waterArray;
     }
-
     for (let y = 0; y < pixelplace_canvas.height; y++) {
         for (let x = 0; x < pixelplace_canvas.width; x++) {
             if (CanvasArray[x][y] == 200) {
@@ -60,8 +59,9 @@ export async function processColors() {
             const r = pixelData[pixelIndex];
             const g = pixelData[pixelIndex + 1];
             const b = pixelData[pixelIndex + 2];
-
-            const colorIndex = canvas.colors.indexOf({r, g, b});
+            const colorIndex = canvas.colors.findIndex(color =>
+              color.r === r && color.g === g && color.b === b
+            );
             CanvasArray[x][y] = colorIndex;
         }
     }
