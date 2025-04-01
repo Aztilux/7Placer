@@ -1,7 +1,6 @@
 import Canvas from '../../canvas/Canvas';
 import '../../variables';
 import Queue from './Queue';
-import { colors } from '../../canvas/util/colors';
 import sort from './Sorting';
 
 export function hex2rgb(hex: string) {
@@ -18,18 +17,19 @@ function getColorDistance(c1: {r: number, g: number, b: number}, c2: {r: number,
 }
 
 function findClosestColor(color: {r: number, g: number, b: number}) {
-  let minDistance = Infinity;
-  let colorNumber: number
-  let index = 0
-  for (const pxpColor of colors) {
-    const distance = getColorDistance(color, pxpColor);
-    if (distance < minDistance) {
-      minDistance = distance;
-      colorNumber = index
+    const canvas = Canvas.instance
+    let minDistance = Infinity;
+    let colorNumber: number
+    let index = 0
+    for (const pxpColor of canvas.colors) {
+        const distance = getColorDistance(color, pxpColor);
+        if (distance < minDistance) {
+        minDistance = distance;
+        colorNumber = index
+        }
+        index += 1
     }
-    index += 1
-  }
-  return colorNumber;
+    return colorNumber;
 }
 
 function previewCanvasImage (x: number, y: number, image: File) {

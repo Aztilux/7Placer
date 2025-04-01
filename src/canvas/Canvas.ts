@@ -1,4 +1,5 @@
 import { canvascss } from "../GUI/style";
+import { hex2rgb } from "../modules";
 import { processWater, processColors } from "./util/canvasloader";
 
 export class Canvas {
@@ -7,11 +8,13 @@ export class Canvas {
     private _isProcessed: boolean
     private _ID: number
     private _canvasArray: any[]
+    private _colors: {r: number, g: number, b: number}[]
 
     private constructor() {
         this._ID = this.ParseID()
         this._isProcessed = false
         this._customCanvas = this.newPreviewCanvas()
+        this._colors = this.getPalette()
     }
 
     public static get instance() {
@@ -49,9 +52,11 @@ export class Canvas {
     public set isProcessed(bool: boolean) {
         this._isProcessed = bool
     }
-
     public get ID() {
         return this._ID
+    }
+    public get colors() {
+        return this._colors
     }
 
     public set canvasArray(array: any[]) {
@@ -70,6 +75,25 @@ export class Canvas {
             this.canvasArray[x][y] = color
             // console.log(this.getColor(x, y), "->", color)
     }
+
+    private getPalette() {
+        const palette_buttons = document.querySelectorAll("#palette-buttons a");
+        let unsorted_array: {color: string, id: number}[] = []
+        palette_buttons.forEach((color) => {
+            let id = color.getAttribute('data-id')
+            let colorhex = color.getAttribute('title')
+            unsorted_array.push({color: colorhex, id: parseInt(id)})
+        });
+        unsorted_array.sort((a, b) => { return a.id-b.id })
+
+        let result: {r: number, g: number, b: number}[] = []
+        unsorted_array.forEach((colorobj) => {
+            result.push(hex2rgb(colorobj.color))
+        })
+
+        return result
+    };
+
 
 }
 

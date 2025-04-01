@@ -1,5 +1,4 @@
 import Canvas from "../Canvas";
-import { colors } from "./colors";
 
 export async function processWater(): Promise<number[][]> {
     var image = await fetch('https://pixelplace.io/canvas/' + Canvas.instance.ID + 'p.png?t200000=' + Date.now());
@@ -40,28 +39,29 @@ export async function processColors() {
 
     const waterArray: number[][] = await processWater();
 
+    const canvas = Canvas.instance
     const startColorsTime = performance.now();
-    const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d', { "willReadFrequently": true });
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const pixelplace_canvas = document.getElementById('canvas') as HTMLCanvasElement;
+    const ctx = pixelplace_canvas.getContext('2d', { "willReadFrequently": true });
+    const imageData = ctx.getImageData(0, 0, pixelplace_canvas.width, pixelplace_canvas.height);
     const pixelData = imageData.data;
-    var CanvasArray = Array.from({ length: canvas.width }, () => Array.from({ length: canvas.height }, () => 1));
+    var CanvasArray = Array.from({ length: pixelplace_canvas.width }, () => Array.from({ length: pixelplace_canvas.height }, () => 1));
     if (waterArray.length > 1) {
         CanvasArray = waterArray;
     }
 
-    for (let y = 0; y < canvas.height; y++) {
-        for (let x = 0; x < canvas.width; x++) {
+    for (let y = 0; y < pixelplace_canvas.height; y++) {
+        for (let x = 0; x < pixelplace_canvas.width; x++) {
             if (CanvasArray[x][y] == 200) {
                 continue;
             }
-            const pixelIndex = (y * canvas.width + x) * 4;
+            const pixelIndex = (y * pixelplace_canvas.width + x) * 4;
 
             const r = pixelData[pixelIndex];
             const g = pixelData[pixelIndex + 1];
             const b = pixelData[pixelIndex + 2];
 
-            const colorIndex = colors.indexOf({r, g, b});
+            const colorIndex = canvas.colors.indexOf({r, g, b});
             CanvasArray[x][y] = colorIndex;
         }
     }
