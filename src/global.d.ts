@@ -9,12 +9,6 @@ interface Window {
             protect: boolean,
             tickspeed: number,
             order: string,
-            saveAuth: Function,
-            getAuth: Function,
-            saveAccount: Function,
-            getAccounts: Function,
-            deleteAccount: Function,
-            connect: Function,
-            disconnect: Function,
+            multi: Object
         }
 }

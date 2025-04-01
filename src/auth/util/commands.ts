@@ -6,6 +6,18 @@ import { createBot } from "../../bot/util/websocket";
 
 var LocalAccounts = new Map<string, {authId: string; authKey: string; authToken: string;}>();
 
+export const public_commands = {
+    saveAuth,
+    getAuth,
+    saveAccount,
+    getAccounts,
+    deleteAccount,
+    connect,
+    connectAll,
+    disconnect,
+    disconnectAll,
+}
+
 // save changes in localstorage
 function storagePush() {
     const obj = Object.fromEntries(LocalAccounts);
@@ -26,7 +38,7 @@ async function delay(ms: number) {
 }
 
 // saves from params
-export function saveAuth(username: string, authId: string, authKey: string, authToken: string, print: boolean = true) {
+function saveAuth(username: string, authId: string, authKey: string, authToken: string, print: boolean = true) {
     if (!authId || !authKey || !authToken) { console.log('[7p] saveAuth usage: saveAuth(username, authId, authKey, authToken)'); return; }
     const account = { authId, authKey, authToken };
     LocalAccounts.set(username, account)
@@ -35,7 +47,7 @@ export function saveAuth(username: string, authId: string, authKey: string, auth
 }
 
 // returns client's auth
-export async function getAuth(print: boolean = true) {
+async function getAuth(print: boolean = true) {
     const cookieStore = (window as any).cookieStore;
     const authToken = await cookieStore.get("authToken");
     const authKey = await cookieStore.get("authKey");
@@ -47,7 +59,7 @@ export async function getAuth(print: boolean = true) {
 }
 
 // saves auth from client cookies
-export async function saveAccount() {
+async function saveAccount() {
     storageGet();
     const AuthObj = await getAuth(false);
     const userinfo = await getPainting(AuthObj.authId, AuthObj.authKey, AuthObj.authToken);
@@ -56,7 +68,7 @@ export async function saveAccount() {
 }
 
 // logs saved auths
-export function getAccounts() {
+function getAccounts() {
     storageGet();
     if (!LocalAccounts || LocalAccounts.size == 0) {
         console.log('No accounts found');
@@ -97,23 +109,11 @@ export function deleteAccount(identifier: string | number) {
 }
 
 
-export async function connect(username: string) {
+async function connect(username: string) {
     storageGet();
     const account = LocalAccounts.get(username)
     const seven = window.seven
-
     if (!username) { console.log('[7p] Missing bot username, connect("username")'); return; }
-
-    if (username == 'all') {
-        for (const [username, account] of LocalAccounts) {
-            if (seven.bots.has(username)) { console.log(`[7p] Account ${username} is already connected.`); continue; }
-            const auth = new Auth(account);
-            createBot(auth, username);
-            await delay(500);
-        }
-        return
-    }
-
     if (!account) { console.log(`[7p] No account found with username ${username}`); return; }
     if (seven.bots.has(username)) { console.log(`[7p] Account ${username} is already connected.`); return; }
 
@@ -121,21 +121,42 @@ export async function connect(username: string) {
     createBot(auth, username);
 }
 
-
-export function disconnect(username: string) {
-    const seven = window.seven
-    const bot = seven.bots.get(username);
-
-    if (!username) { console.log('[7p] disconnect requires a username, disconnect("username")'); return; }
-
-    if (username == 'all') {
-        if (seven.bots.size == 1) { console.log('[7p] No bots connected.'); return; }
-        seven.bots.forEach(bot => {
-            bot.kill();
-        })
-        return
+async function connectAll() {
+    storageGet();
+    const seven = window.seven;
+    for (const [username, account] of LocalAccounts) {
+        if (seven.bots.has(username)) { console.log(`[7p] Account ${username} is already connected.`); continue; }
+        const auth = new Auth(account);
+        createBot(auth, username);
+        await delay(500);
     }
+}
 
-    if (!bot) { console.log(`[7p] No bot connected with username ${username}`); return }
-    bot.kill()
+
+function disconnect(username: string) {
+    const seven = window.seven;
+    const bot = seven.bots.get(username);
+    if (!username) {
+        console.log('[7p] disconnect requires a username, disconnect("username")');
+        return;
+    }
+    if (!bot) {
+        console.log(`[7p] No bot connected with username ${username}`);
+        return;
+    };
+    bot.kill();
+}
+
+function disconnectAll() {
+    const seven = window.seven;
+    if (seven.bots.size == 5) {
+        console.log('[7p] No bots connected.');
+        return;
+    };
+    seven.bots.forEach((bot, name) => {
+        if (name == "Client") {
+            return;
+        };
+        bot.kill();
+    });
 }
