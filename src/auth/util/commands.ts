@@ -4,7 +4,6 @@ import "../../variables"
 import getPainting from "../../requests/get-painting";
 import { createBot } from "../../bot/util/websocket";
 
-const window2 = (window as any)
 var LocalAccounts = new Map<string, {authId: string; authKey: string; authToken: string;}>();
 
 // save changes in localstorage
@@ -37,7 +36,7 @@ export function saveAuth(username: string, authId: string, authKey: string, auth
 
 // returns client's auth
 export async function getAuth(print: boolean = true) {
-    const cookieStore = window2.cookieStore;
+    const cookieStore = (window as any).cookieStore;
     const authToken = await cookieStore.get("authToken");
     const authKey = await cookieStore.get("authKey");
     const authId = await cookieStore.get("authId");
@@ -101,18 +100,14 @@ export function deleteAccount(identifier: string | number) {
 export async function connect(username: string) {
     storageGet();
     const account = LocalAccounts.get(username)
-    const connectedbot = window2.seven.bots.find((bot: WSBot) => bot.generalinfo?.user.name == username);
+    const seven = window.seven
 
     if (!username) { console.log('[7p] Missing bot username, connect("username")'); return; }
 
     if (username == 'all') {
         for (const [username, account] of LocalAccounts) {
-            // checks if bot is already connected
-            const connectedbot = window2.seven.bots.find((bot: WSBot) => bot.generalinfo?.user.name == username);
+            if (seven.bots.has(username)) { console.log(`[7p] Account ${username} is already connected.`); continue; }
             const auth = new Auth(account);
-
-            if (connectedbot) { console.log(`[7p] Account ${username} is already connected.`); continue; }
-
             createBot(auth, username);
             await delay(500);
         }
@@ -120,7 +115,7 @@ export async function connect(username: string) {
     }
 
     if (!account) { console.log(`[7p] No account found with username ${username}`); return; }
-    if (connectedbot) { console.log(`[7p] Account ${username} is already connected.`); return; }
+    if (seven.bots.has(username)) { console.log(`[7p] Account ${username} is already connected.`); return; }
 
     const auth = new Auth(account);
     createBot(auth, username);
@@ -128,19 +123,19 @@ export async function connect(username: string) {
 
 
 export function disconnect(username: string) {
-    const bot = window2.seven.bots.find((bot: WSBot) => bot.generalinfo?.user.name == username);
+    const seven = window.seven
+    const bot = seven.bots.get(username);
 
     if (!username) { console.log('[7p] disconnect requires a username, disconnect("username")'); return; }
 
     if (username == 'all') {
-        if (window2.seven.bots.length == 1) { console.log('[7p] No bots connected.'); return; }
-        for (const bot of window2.seven.bots) {
+        if (seven.bots.size == 1) { console.log('[7p] No bots connected.'); return; }
+        seven.bots.forEach(bot => {
             bot.kill();
-        }
+        })
         return
     }
 
     if (!bot) { console.log(`[7p] No bot connected with username ${username}`); return }
-
     bot.kill()
 }

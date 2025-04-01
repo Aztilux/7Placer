@@ -2,8 +2,6 @@ import { Bot, WSBot, Client } from "../Bot";
 import '../../variables'
 import Auth from "../../auth/Auth";
 
-const seven = (window as any).seven
-
 // client
 function hookClient() {
     const unmodifiedWS = window.WebSocket;

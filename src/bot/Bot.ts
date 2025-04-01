@@ -8,8 +8,6 @@ import { MessageHandler } from "./util/MessageHandler";
 import Protector from "../modules/defaultModules/Protect";
 import getPalive from "./util/palive";
 import { deleteAccount } from "../auth/util/commands";
-
-const seven = (window as any).seven
 export class Bot {
 
     public username: string
@@ -31,15 +29,17 @@ export class Bot {
     }
 
     public kill() {
-        ((window as any).seven.bots as Map<string, Bot>).delete(this.username)
+        const seven = window.seven;
+        seven.bots.delete(this.username);
         if (this._ws.readyState == 1) {
-            this._ws.close()
-        }
-    }
+            this._ws.close();
+        };
+    };
 
     public async placePixel(x: number, y: number, color: number, client: boolean = false, tracker: boolean = true): Promise<boolean> {
         const canvas = Canvas.instance;
         const canvascolor = canvas.getColor(x, y);
+        const seven = window.seven
 
         if (canvascolor == color || canvascolor == 200) {
             return true;
@@ -62,6 +62,7 @@ export class Bot {
     }
 
     public static async findAvailableBot(): Promise<Bot> {
+        const seven = window.seven
         const bots = (seven.bots as Map<string, Bot>)
         var tick = 0
         while (true) {
@@ -136,8 +137,9 @@ export class WSBot extends Bot {
                 console.log(`[7p] [Bot ${this.username}] Pixelplace WS error: ${data[1]}`);
         })
         this.handler.on('canvas', () => {
+            const seven = window.seven
             console.log(`[7p] Succesfully connected to bot ${this.username}`)
-            seven.bots.push(this);
+            seven.bots.set(this.username, this);
         })
         this.handler.on(2, () => {
             this.ws.send('3')
@@ -166,11 +168,11 @@ export class Client extends Bot {
     };
 
     private start() {
+        const seven = window.seven
         this.username = 'Client';
         this.tracker = this.createTracker();
         this.internalListeners();
-        let bots = ((window as any).seven.bots as Map<string, Bot>)
-        bots.set(this.username, this)
+        seven.bots.set(this.username, this)
     }
 
     private internalListeners() {

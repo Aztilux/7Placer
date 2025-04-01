@@ -1,6 +1,6 @@
 import * as cmd from './auth/util/commands'
 
-(window as any).seven = {
+window.seven = {
     bots: new Map(),
     pixelspeed: 21,
     queue: [],
@@ -16,3 +16,4 @@ import * as cmd from './auth/util/commands'
     connect: cmd.connect,
     disconnect: cmd.disconnect,
 }
+

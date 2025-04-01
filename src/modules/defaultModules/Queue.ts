@@ -3,8 +3,6 @@
     import '../../variables'
     import Protector from "./Protect"
 
-    const seven = (window as any).seven
-
     export default class Queue {
         private static performance: number
 
@@ -13,6 +11,7 @@
         }
 
         public static add(x: number, y: number, color: number, protection: boolean, atStart: boolean = false, client: boolean = false) {
+            const seven = window.seven
             const pixel = { x: x, y: y, color: color, protected: protection, client: client };
             if (atStart) seven.queue.unshift(pixel);
             else {
@@ -22,11 +21,13 @@
         };
 
         public static clear() {
+            const seven = window.seven
             // console.log('Queue cleared: ', seven.queue);
             seven.queue = [];
         };
 
         public static async start(): Promise<void> { // waiter waiter! I want .sort!
+            const seven = window.seven
             const canvas = Canvas.instance
             const protector = new Protector
             if (!canvas.isProcessed) { console.log('[7p] Error starting queue: Canvas has not been processed yet.'); Queue.stop(); return }
@@ -71,6 +72,7 @@
         };
 
         public static stop() {
+            const seven = window.seven
             seven.inprogress = false;
             const canvas = Canvas.instance;
             canvas.previewCanvas.clearRect(0,0,3000,3000);
