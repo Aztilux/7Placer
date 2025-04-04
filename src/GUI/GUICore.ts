@@ -87,16 +87,51 @@ class Tab {
 
 class Submenu {
     private _parent_tab: Tab
+    private _submenu_element: JQuery<HTMLElement>
+    private _submenu_inside: JQuery<HTMLElement>
+
     constructor(parent_tab: Tab, name: string) {
         this._parent_tab = parent_tab
         this._createSubmenu(name)
     }
 
-    private _createSubmenu(name: string) {
-        const submenu_element = $(`<div class="GUISubmenu" id="submenu_${name}">`)
-        submenu_element.append('<p class="submenuTitle">Test</p>')
-        submenu_element.append('<div class="submenuInside">')
-        this._parent_tab.submenu_container.append(submenu_element)
+    public createToggle(name: string, default_state: Boolean, callback: (state: Boolean) => void): JQuery<HTMLElement> {
+        const container = $(`<div class="toggleContainer" id="toggle_${name}"></div>`)
+        container.append('<div class="toggleSquare"></div>')
+        container.append(`<p class="toggleName">${name}</p>`)
+        this._submenu_inside.append(container)
+        if (default_state) {
+            container.addClass("toggled")
+        }
+        let state = default_state
+        container.on("click", () => {
+            if (state) {
+                state = false
+                container.removeClass("toggled")
+            } else {
+                state = true
+                container.addClass("toggled")
+            }
+            callback(state)
+        })
+        return container
+    }
+
+    public createButton(name: string, callback: () => void): JQuery<HTMLElement> {
+        const button = $(`<div class="button" id="button_${name}">Test</div>`)
+        this._submenu_inside.append(button)
+        button.on("click", () => {
+            callback()
+        })
+        return button
+    }
+
+    private _createSubmenu(name: string): void {
+        this._submenu_element = $(`<div class="GUISubmenu" id="submenu_${name}">`)
+        this._submenu_element.append('<p class="submenuTitle">Test</p>')
+        this._submenu_inside = $('<div class="submenuInside">')
+        this._submenu_element.append(this._submenu_inside)
+        this._parent_tab.submenu_container.append(this._submenu_element)
     }
 }
 
@@ -105,5 +140,8 @@ class Submenu {
 // const GUI = new MainGUI();
 // const tab1 = GUI.createTab("test", "https://pngimg.com/d/android_logo_PNG5.png")
 // GUI.switchTab("test")
-// tab1.createSubmenu("test")
+// let submenu = tab1.createSubmenu("test")
+// submenu.createToggle("toggleTest", false, state => {
+//     console.log("I am now: ", state)
+// })
 // GUI.createTab("test2", "https://pngimg.com/d/android_logo_PNG5.png")
