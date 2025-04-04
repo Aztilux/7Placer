@@ -1,4 +1,5 @@
 class MainGUI {
+    private static _instance: MainGUI
     private _tabs: Map<String, Tab> = new Map()
 
     constructor() {
@@ -26,7 +27,7 @@ class MainGUI {
 
     private _createMainGUI(): void {
         let GUI_core = `
-        <div id='sevenGUI'>
+        <div id='sevenGUI' style="display: none;">
             <div id="rainbowBar"></div>
             <div id="generalContainer">
                 <div id="sideBarContainer"></div>
@@ -34,7 +35,27 @@ class MainGUI {
         </div>
         `;
         $("body").append(GUI_core);
+
+        const toggle_gui_button = $('<a href="#" title="Seven Opener" class="grey margin-top-button"><img src="https://infonutricional.tomatelavida.com.co/wp-content/uploads/2023/06/postobon_informacion_nutriconallogo-7up.png" alt="icon"></a>')
+        $("#menu-buttons").append(toggle_gui_button)
+        let toggle = false
+        toggle_gui_button.on("click", () => {
+            if (toggle) {
+                $('#sevenGUI').css("display", "none")
+                toggle = false
+            } else {
+                $('#sevenGUI').css("display", "flex")
+                toggle = true
+            }
+        })
     };
+
+    public static get instance() {
+        if (!this._instance) {
+            this._instance = new MainGUI
+        }
+        return this._instance
+    }
 };
 
 class Tab {
@@ -136,7 +157,6 @@ class Submenu {
 }
 
 //Debug
-// $("#menu-buttons").append('<a href="#" title="Seven Opener" class="grey margin-top-button"><img src="https://infonutricional.tomatelavida.com.co/wp-content/uploads/2023/06/postobon_informacion_nutriconallogo-7up.png" alt="icon"></a>')
 // const GUI = new MainGUI();
 // const tab1 = GUI.createTab("test", "https://pngimg.com/d/android_logo_PNG5.png")
 // GUI.switchTab("test")
