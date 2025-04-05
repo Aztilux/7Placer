@@ -147,6 +147,27 @@ class Submenu {
         return button
     }
 
+    public createDrop(label: string, callback: (img: File) => void): JQuery<HTMLElement> {
+        const drop_container = $(`<div class="dropImage">${label}</div>`);
+        drop_container.on("dragover", function (event) {
+            event.preventDefault();
+        });
+        drop_container.on("drop", function (event) {
+            event.preventDefault();
+            const file = event.originalEvent.dataTransfer.files[0];
+            if (file.type.startsWith("image/")) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    drop_container.html(`<img src="${e.target.result}" style="max-width: 100%; max-height: 100%;">`);
+                };
+                reader.readAsDataURL(file);
+                callback(file);
+            }
+        });
+        this._submenu_inside.append(drop_container);
+        return drop_container
+    }
+
     private _createSubmenu(name: string): void {
         this._submenu_element = $(`<div class="GUISubmenu" id="submenu_${name}">`)
         this._submenu_element.append('<p class="submenuTitle">Test</p>')
@@ -157,11 +178,16 @@ class Submenu {
 }
 
 //Debug
-// const GUI = new MainGUI();
-// const tab1 = GUI.createTab("test", "https://pngimg.com/d/android_logo_PNG5.png")
-// GUI.switchTab("test")
-// let submenu = tab1.createSubmenu("test")
-// submenu.createToggle("toggleTest", false, state => {
-//     console.log("I am now: ", state)
+// jQuery(function() {
+//     const GUI = new MainGUI();
+//     const tab1 = GUI.createTab("test", "https://pngimg.com/d/android_logo_PNG5.png")
+//     GUI.switchTab("test")
+//     let submenu = tab1.createSubmenu("test")
+//     submenu.createToggle("toggleTest", false, state => {
+//         console.log("I am now: ", state)
+//     })
+//     submenu.createDrop("allahtest", image => {
+//         console.log(image)
+//     })
+//     GUI.createTab("test2", "https://pngimg.com/d/android_logo_PNG5.png")
 // })
-// GUI.createTab("test2", "https://pngimg.com/d/android_logo_PNG5.png")
