@@ -1,6 +1,6 @@
 import dragElement from "./dragElement";
 
-class MainGUI {
+export class MainGUI {
     private static _instance: MainGUI
     private _tabs: Map<String, Tab> = new Map()
 
@@ -30,6 +30,7 @@ class MainGUI {
     private _createMainGUI(): void {
         let GUI_core = `
         <div id='sevenGUI' style="display: none;">
+            <div id="sevenGUIheader">7PLACER</div>
             <div id="rainbowBar"></div>
             <div id="generalContainer">
                 <div id="sideBarContainer"></div>
@@ -47,7 +48,7 @@ class MainGUI {
                 $('#sevenGUI').css("display", "none")
                 toggle = false
             } else {
-                $('#sevenGUI').css("display", "flex")
+                $('#sevenGUI').css({"display": "flex", "top": "50%", "left": "50%", "transform": "translate(-50%, -50%)"})
                 toggle = true
             }
         })
@@ -119,7 +120,7 @@ export class Submenu {
         this._createSubmenu(name)
     }
 
-    public createToggle(name: string, default_state: Boolean, callback: (state: Boolean) => void): JQuery<HTMLElement> {
+    public createToggle(name: string, default_state: boolean, callback: (state: boolean) => void): JQuery<HTMLElement> {
         const container = $(`<div class="toggleContainer" id="toggle_${name}"></div>`)
         container.append('<div class="toggleSquare"></div>')
         container.append(`<p class="toggleName">${name}</p>`)
@@ -142,7 +143,7 @@ export class Submenu {
     }
 
     public createButton(name: string, callback: () => void): JQuery<HTMLElement> {
-        const button = $(`<div class="button" id="button_${name}">Test</div>`)
+        const button = $(`<div class="button" id="button_${name}">${name}</div>`)
         this._submenu_inside.append(button)
         button.on("click", () => {
             callback()
@@ -171,7 +172,7 @@ export class Submenu {
         return drop_container
     }
 
-    public createInput(placeholder: string, type: string, onType: (text: string | number | string[]) => void) {
+    public createInput(placeholder: string, type: string, onType: (text: any) => void) {
         const input = $(`<input class="input" placeholder="${placeholder}">`)
         input.on("input", () => {
             onType(input.val())
@@ -181,26 +182,9 @@ export class Submenu {
 
     private _createSubmenu(name: string): void {
         this._submenu_element = $(`<div class="GUISubmenu" id="submenu_${name}">`)
-        this._submenu_element.append('<p class="submenuTitle">Test</p>')
+        this._submenu_element.append(`<p class="submenuTitle">${name}</p>`)
         this._submenu_inside = $('<div class="submenuInside">')
         this._submenu_element.append(this._submenu_inside)
         this._parent_tab.submenu_container.append(this._submenu_element)
     }
 }
-
-jQuery(function() {
-    const GUI = new MainGUI();
-    const tab1 = GUI.createTab("test", "https://pngimg.com/d/android_logo_PNG5.png")
-    GUI.switchTab("test")
-    let submenu = tab1.createSubmenu("test")
-    submenu.createToggle("toggleTest", false, state => {
-        console.log("I am now: ", state)
-    })
-    submenu.createDrop("allahtest", image => {
-        console.log(image)
-    })
-    submenu.createInput("test_here", "text", (t) => {
-        console.log(t)
-    })
-    GUI.createTab("test2", "https://pngimg.com/d/android_logo_PNG5.png")
-})

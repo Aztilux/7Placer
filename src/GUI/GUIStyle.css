@@ -6,6 +6,9 @@
     background-color: #1C1C1C;
     height: 40vh;
     width: 50vh;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     position: absolute;
     border: #262626;
     border-style: solid;
@@ -16,7 +19,23 @@
     z-index: 1000;
 }
 
+#sevenGUIheader {
+    background-image: linear-gradient(90deg, rgba(0,140,255,1) 0%, rgba(96,39,147,1) 21%, rgba(140,77,78,1) 63%, rgba(181,181,0,1) 100%);
+    color: transparent;
+    background-clip: text;
+    text-align: center;
+    font-family: Verdana, Tahoma, sans-serif;
+    background-color: #1a1a1a;
+    font-size: 1.5vh;
+    font-weight: bolder;
+}
+
+#sevenGUIheader:hover {
+    cursor: move;
+}
+
 #rainbowBar {
+    all: revert;
     height: 0.3vh;
     width: 100%;
     background: linear-gradient(90deg, rgba(0,140,255,1) 0%, rgba(96,39,147,1) 21%, rgba(140,77,78,1) 63%, rgba(181,181,0,1) 100%);
@@ -194,6 +213,7 @@
 }
 
 .inputContainer input {
+    text-align:center;
     height: 1.7vh;
     width: auto;
     max-width: 9vh;
@@ -202,4 +222,9 @@
     color: white;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 1.1vh;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
