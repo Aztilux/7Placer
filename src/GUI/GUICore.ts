@@ -1,3 +1,5 @@
+import dragElement from "./dragElement";
+
 class MainGUI {
     private static _instance: MainGUI
     private _tabs: Map<String, Tab> = new Map()
@@ -35,6 +37,7 @@ class MainGUI {
         </div>
         `;
         $("body").append(GUI_core);
+        dragElement($("#sevenGUI")[0])
 
         const toggle_gui_button = $('<a href="#" title="Seven Opener" class="grey margin-top-button"><img src="https://infonutricional.tomatelavida.com.co/wp-content/uploads/2023/06/postobon_informacion_nutriconallogo-7up.png" alt="icon"></a>')
         $("#menu-buttons").append(toggle_gui_button)
@@ -58,7 +61,7 @@ class MainGUI {
     }
 };
 
-class Tab {
+export class Tab {
     private _submenus: Map<string, Submenu> = new Map()
     private _main_gui: MainGUI
     private _tab_button: JQuery<HTMLElement>
@@ -106,7 +109,7 @@ class Tab {
     }
 }
 
-class Submenu {
+export class Submenu {
     private _parent_tab: Tab
     private _submenu_element: JQuery<HTMLElement>
     private _submenu_inside: JQuery<HTMLElement>
@@ -147,7 +150,7 @@ class Submenu {
         return button
     }
 
-    public createDrop(label: string, callback: (img: File) => void): JQuery<HTMLElement> {
+    public createDrop(label: string, onFile: (img: File) => void): JQuery<HTMLElement> {
         const drop_container = $(`<div class="dropImage">${label}</div>`);
         drop_container.on("dragover", function (event) {
             event.preventDefault();
@@ -161,11 +164,19 @@ class Submenu {
                     drop_container.html(`<img src="${e.target.result}" style="max-width: 100%; max-height: 100%;">`);
                 };
                 reader.readAsDataURL(file);
-                callback(file);
+                onFile(file);
             }
         });
         this._submenu_inside.append(drop_container);
         return drop_container
+    }
+
+    public createInput(placeholder: string, type: string, onType: (text: string | number | string[]) => void) {
+        const input = $(`<input class="input" placeholder="${placeholder}">`)
+        input.on("input", () => {
+            onType(input.val())
+        })
+        this._submenu_inside.append($(`<div class="inputContainer"></div>`).append(input))
     }
 
     private _createSubmenu(name: string): void {
@@ -177,17 +188,19 @@ class Submenu {
     }
 }
 
-//Debug
-// jQuery(function() {
-//     const GUI = new MainGUI();
-//     const tab1 = GUI.createTab("test", "https://pngimg.com/d/android_logo_PNG5.png")
-//     GUI.switchTab("test")
-//     let submenu = tab1.createSubmenu("test")
-//     submenu.createToggle("toggleTest", false, state => {
-//         console.log("I am now: ", state)
-//     })
-//     submenu.createDrop("allahtest", image => {
-//         console.log(image)
-//     })
-//     GUI.createTab("test2", "https://pngimg.com/d/android_logo_PNG5.png")
-// })
+jQuery(function() {
+    const GUI = new MainGUI();
+    const tab1 = GUI.createTab("test", "https://pngimg.com/d/android_logo_PNG5.png")
+    GUI.switchTab("test")
+    let submenu = tab1.createSubmenu("test")
+    submenu.createToggle("toggleTest", false, state => {
+        console.log("I am now: ", state)
+    })
+    submenu.createDrop("allahtest", image => {
+        console.log(image)
+    })
+    submenu.createInput("test_here", "text", (t) => {
+        console.log(t)
+    })
+    GUI.createTab("test2", "https://pngimg.com/d/android_logo_PNG5.png")
+})
