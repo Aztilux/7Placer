@@ -58,12 +58,23 @@
     position: relative;
 }
 
-.sideBarTab {
+#sideBarTabContainer {
+    display: flex;
+    flex-flow: column;
+    flex-grow: 1;
     width: 100%;
-    height: 17%;
+    overflow-y: overlay;
+    scrollbar-width: thin;
+    scrollbar-color: grey #161616;
+    direction: rtl;
+}
+
+.sideBarTab {
+    height: 7vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 100%;
 }
 
 .sideBarTab img {
@@ -81,8 +92,8 @@
     filter: invert(1) brightness(1);
 }
 
-#settingsTab {
-    position: absolute;
+#tabButton_settings {
+    position: relative;
     bottom: 0;
 }
 

@@ -28,18 +28,22 @@ export class MainGUI {
     }
 
     private _createMainGUI(): void {
+        // main gui elements
         let GUI_core = `
         <div id='sevenGUI' style="display: none;">
             <div id="sevenGUIheader">7PLACER</div>
             <div id="rainbowBar"></div>
             <div id="generalContainer">
-                <div id="sideBarContainer"></div>
+                <div id="sideBarContainer">
+                    <div id="sideBarTabContainer"></div>
+                </div>
             </div>
         </div>
         `;
         $("body").append(GUI_core);
         dragElement($("#sevenGUI")[0])
 
+        // menu toggle
         const toggle_gui_button = $('<a href="#" title="Seven Opener" class="grey margin-top-button"><img src="https://infonutricional.tomatelavida.com.co/wp-content/uploads/2023/06/postobon_informacion_nutriconallogo-7up.png" alt="icon"></a>')
         $("#menu-buttons").append(toggle_gui_button)
         let toggle = false
@@ -52,6 +56,10 @@ export class MainGUI {
                 toggle = true
             }
         })
+
+        // settings tab
+        const settings_tab = this.createTab('settings', 'https://upload.wikimedia.org/wikipedia/commons/d/dc/Settings-icon-symbol-vector.png')
+        settings_tab.tab_button.appendTo('#sideBarContainer')
     };
 
     public static get instance() {
@@ -99,7 +107,7 @@ export class Tab {
         this._tab_button.on("click", () => {
             this._main_gui.switchTab(name)
         })
-        $("#sideBarContainer").append(this._tab_button);
+        $("#sideBarTabContainer").append(this._tab_button);
 
         this._submenu_container = $(`<div class="GUITabContainer" id="tab_${name}">`).css("display", "none")
         $("#generalContainer").append(this._submenu_container)
@@ -107,6 +115,9 @@ export class Tab {
 
     get submenu_container() {
         return this._submenu_container
+    }
+    get tab_button() {
+        return this._tab_button
     }
 }
 
