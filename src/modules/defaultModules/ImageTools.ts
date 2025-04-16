@@ -69,6 +69,7 @@ export async function ImageToPixels(image: any) {
 }
 
 export async function botImage(x: number, y: number, image: File) {
+    if (!x || !y || !image) return
     const seven = window.seven
     const bitmap = await createImageBitmap(image)
     const processed = await ImageToPixels(bitmap)
