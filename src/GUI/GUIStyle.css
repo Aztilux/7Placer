@@ -267,3 +267,14 @@ input::-webkit-inner-spin-button {
 }
 
 /* Select */
+.submenuInside select {
+    background: linear-gradient(180deg, rgb(76, 75, 75) 0%, rgb(25, 25, 25) 100%);
+    border: none;
+    color: rgb(203, 203, 203);
+    font-family: Verdana, Tahoma, sans-serif;
+    height: 1.7vh;
+    width: 80%;
+    display: block;
+    margin: 5% auto;
+    font-size: 1vh;
+}
