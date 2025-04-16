@@ -8,8 +8,8 @@ indent_size=4
 
 [{.babelrc,.stylelintrc,.eslintrc,jest.config,*.bowerrc,*.jsb3,*.jsb2,*.json,*.yaml,*.yml}]
 indent_style=space
-indent_size=2
+indent_size=4
 
 [{*.js,*.vue,*.ts,*.cjs,.swcrc}]
 indent_style=space
-indent_size=2
+indent_size=4
