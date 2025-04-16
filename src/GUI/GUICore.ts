@@ -189,12 +189,14 @@ export class Submenu {
             onType(input.val())
         })
         this._submenu_inside.append($(`<div class="inputContainer"></div>`).append(input))
+        return input
     }
 
     public createText(text: string) {
         const container = $(`<div class="textContainer">`)
-        container.append(`<p>${text}</p>`)
+        const text_elem = container.append(`<p>${text}</p>`)
         this._submenu_inside.append(container)
+        return text_elem
     }
 
     public createSelect(default_value: string, options: {label: string, value: string}[], onChange: (value: any) => void) {
@@ -209,6 +211,7 @@ export class Submenu {
             onChange(value)
         })
         this._submenu_inside.append(selector)
+        return selector
     }
 
     private _createSubmenu(name: string): void {
