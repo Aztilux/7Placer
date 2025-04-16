@@ -191,6 +191,12 @@ export class Submenu {
         this._submenu_inside.append($(`<div class="inputContainer"></div>`).append(input))
     }
 
+    public createText(text: string) {
+        const container = $(`<div class="textContainer">`)
+        container.append(`<p>${text}</p>`)
+        this._submenu_inside.append(container)
+    }
+
     private _createSubmenu(name: string): void {
         this._submenu_element = $(`<div class="GUISubmenu" id="submenu_${name}">`)
         this._submenu_element.append(`<p class="submenuTitle">${name}</p>`)

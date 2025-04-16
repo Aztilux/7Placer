@@ -1,6 +1,6 @@
 import { botImage } from "../modules";
 import Queue from "../modules/defaultModules/Queue";
-import { MainGUI, Tab, Submenu } from "./GUICore";
+import { MainGUI } from "./GUICore";
 
 $(function() {
     const GUI = MainGUI.instance;
