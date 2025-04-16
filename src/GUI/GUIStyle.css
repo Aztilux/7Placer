@@ -114,7 +114,8 @@
     min-width: 25%;
     max-width: 45%;
     box-sizing: border-box;
-    flex: 1;
+    flex-grow: 1;
+    flex-shrink: 1;
     position: relative;
     background-color: #151515;
     border: #252525;
