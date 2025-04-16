@@ -186,9 +186,9 @@
     display: flex;
     flex-direction: row;
     justify-content: left;
-    padding-left: 7%;
     overflow: hidden;
     margin-top: 3%;
+    justify-content: center;
 }
 
 .textContainer > p {
