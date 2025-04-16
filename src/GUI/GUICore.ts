@@ -197,14 +197,16 @@ export class Submenu {
         this._submenu_inside.append(container)
     }
 
-    public createSelect(default_value: string, options: {label: string, value: string}[]) {
+    public createSelect(default_value: string, options: {label: string, value: string}[], onChange: (value: any) => void) {
         const selector = $(`<select id="selector_${default_value}"></select>`)
         selector.append(`<option value="">${default_value}</option>`)
         for (const option of options) {
             selector.append(`<option value="${option.value}">${option.label}</option>`)
         }
         selector.on("change", () => {
-            console.log(selector.val())
+            const value = selector.val()
+            if (value == "") return
+            onChange(value)
         })
         this._submenu_inside.append(selector)
     }
