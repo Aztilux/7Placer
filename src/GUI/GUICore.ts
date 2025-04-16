@@ -184,7 +184,7 @@ export class Submenu {
     }
 
     public createInput(placeholder: string, type: string, onType: (text: any) => void) {
-        const input = $(`<input class="input" placeholder="${placeholder}">`)
+        const input = $(`<input class="input" type="${type}" placeholder="${placeholder}">`)
         input.on("input", () => {
             onType(input.val())
         })
