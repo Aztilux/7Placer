@@ -112,7 +112,7 @@
 .GUISubmenu {
     all: revert;
     min-width: 25%;
-    max-width: 45%;
+    max-width: 50%;
     box-sizing: border-box;
     flex-grow: 1;
     flex-shrink: 1;
