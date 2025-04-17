@@ -11,24 +11,24 @@ export function hex2rgb(hex: string): [r: number, g: number, b: number] {
   return [ r, g, b ];
 }
 
-function getColorDistance(c1: {r: number, g: number, b: number}, c2: [r: number, g: number, b: number]) {
-    return (c1.r - c2[0]) ** 2 + (c1.g - c2[1]) ** 2 + (c1.b - c2[2]) ** 2;
-}
+// function getColorDistance(c1: {r: number, g: number, b: number}, c2: [r: number, g: number, b: number]) {
+//     return (c1.r - c2[0]) ** 2 + (c1.g - c2[1]) ** 2 + (c1.b - c2[2]) ** 2;
+// }
 
-function findClosestColor(color: {r: number, g: number, b: number}, palette: [r: number, g: number, b:number][]) {
-    let minDistance = Infinity;
-    let colorNumber: number
-    let index = 0
-    for (const palette_color of palette) {
-        const distance = getColorDistance(color, palette_color);
-        if (distance < minDistance) {
-        minDistance = distance;
-        colorNumber = index
-        }
-        index += 1
-    }
-    return colorNumber;
-}
+// function findClosestColor(color: {r: number, g: number, b: number}, palette: [r: number, g: number, b:number][]) {
+//     let minDistance = Infinity;
+//     let colorNumber: number
+//     let index = 0
+//     for (const palette_color of palette) {
+//         const distance = getColorDistance(color, palette_color);
+//         if (distance < minDistance) {
+//         minDistance = distance;
+//         colorNumber = index
+//         }
+//         index += 1
+//     }
+//     return colorNumber;
+// }
 
 function previewCanvasImage (x: number, y: number, image: File) {
     const canvas = Canvas.instance;
@@ -117,6 +117,13 @@ function imageData2array(imageData: ImageData, thread_amount: number, palette: [
 }
 
 export async function ImageToPixels(image: ImageBitmap, dither?: string, palette?: [r: number, g: number, b: number][]) { // dither options: FloydSteinberg, FalseFloydSteinberg, Stucki, Atkinson, Jarvis, Burkes, Sierra, TwoSierra, SierraLite
+    const processing_toast = Toastify ({
+        text: `Processing image`,
+        style: {
+            background: "#1a1a1a",
+            border: "solid rgb(0, 255, 81)"
+        },
+    }).showToast();
     const canvas = new OffscreenCanvas(image.width, image.height);
     const ctx = canvas.getContext('2d');
     ctx.drawImage(image, 0, 0, image.width, image.height);
@@ -126,8 +133,16 @@ export async function ImageToPixels(image: ImageBitmap, dither?: string, palette
         quant.sample(imageData);
         quant.reduce(imageData, 1, dither)
     }
-
-    return imageData2array(imageData, 2, palette || Canvas.instance.colors);
+    const array = imageData2array(imageData, 2, palette || Canvas.instance.colors);
+    processing_toast.hideToast();
+    Toastify ({
+        text: `Image processed!`,
+        style: {
+            background: "#1a1a1a",
+            border: "solid rgb(0, 255, 81)"
+        },
+    }).showToast();
+    return array
 }
 
 export async function botImage(x: number, y: number, image: File) {
