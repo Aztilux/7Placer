@@ -20,7 +20,11 @@ const intervalId = setInterval(() => {
     if (document.getElementById('canvas')) {
         clearInterval(intervalId);
         Toastify ({
-            text: '7Placer Loaded!',
+            text: `7Placer ${packageInfo.version} Loaded! Loading canvas...`,
+            style: {
+                background: "#1a1a1a",
+                border: "solid #7300ff"
+            }
         }).showToast();
         Canvas.instance
     }
