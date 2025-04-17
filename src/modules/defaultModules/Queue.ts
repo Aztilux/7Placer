@@ -16,31 +16,45 @@
             if (atStart) seven.queue.unshift(pixel);
             else {
                 seven.queue.push(pixel);
-            }
+            };
             if (seven.queue.length == 1) Queue.start();
         };
 
-        public static clear() {
+        public static bulkAdd(pixel_array: {x: number, y: number, color: number}[], protection: boolean, atStart: boolean = false, client: boolean = false) {
             const seven = window.seven
+            pixel_array.forEach(pixel => {
+                (pixel as any).protected = protection;
+                (pixel as any).client = client;
+            });
+            if (!atStart) {
+                seven.queue = seven.queue.concat(pixel_array)
+            } else {
+                seven.queue.unshift(...pixel_array)
+            }
+            if (seven.queue.length == pixel_array.length) Queue.start();
+        };
+
+        public static clear() {
+            const seven = window.seven;
             // console.log('Queue cleared: ', seven.queue);
             seven.queue = [];
         };
 
         public static async start(): Promise<void> { // waiter waiter! I want .sort!
-            const seven = window.seven
-            const canvas = Canvas.instance
-            const protector = new Protector
+            const seven = window.seven;
+            const canvas = Canvas.instance;
+            const protector = new Protector;
             if (!canvas.isProcessed) {
                 Toastify ({
                     text: `Canvas has not been processed yet.`,
                     style: {
                         background: "#1a1a1a",
-                        border: "solid rgb(255, 0, 0)"
+                        border: "solid rgb(255, 0, 0)",
                     },
                 }).showToast();
                 console.log('[7p] Error starting queue: Canvas has not been processed yet.');
                 Queue.stop();
-                return
+                return;
             }
             seven.inprogress = true
             let tick = 0
