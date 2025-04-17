@@ -14,6 +14,7 @@ $(function() {
     })
 
     const sort_options = [
+        {label: "none", value: "none"},
         {label: "random", value: "rand"},
         {label: "colors", value: "colors"},
         {label: "vertical", value: "vertical"},
@@ -22,6 +23,9 @@ $(function() {
     ]
     bot_settings.createSelect('-- select sorting --', sort_options, value => {
         window.seven.order = value
+    })
+    bot_settings.createColor("GUI Color Picker", "", color => {
+        $(":root").css("--gui-main-color", color)
     })
 
     tab.createSubmenu("version").createText("7Placer version " + packageInfo.version)

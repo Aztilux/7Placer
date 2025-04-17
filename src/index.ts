@@ -23,7 +23,7 @@ const intervalId = setInterval(() => {
             text: `7Placer ${packageInfo.version} Loaded! Loading canvas...`,
             style: {
                 background: "#1a1a1a",
-                border: "solid #7300ff"
+                border: "solid var(--gui-main-color)"
             },
             callback: () => {
                 Toastify ({
@@ -32,7 +32,7 @@ const intervalId = setInterval(() => {
                     newWindow: true,
                     style: {
                         background: "#1a1a1a",
-                        border: "solid #7300ff"
+                        border: "solid var(--gui-main-color)"
                     },
                 }).showToast();
             }

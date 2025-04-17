@@ -122,7 +122,7 @@ export async function ImageToPixels(image: ImageBitmap, dither?: string, palette
         duration: 100000,
         style: {
             background: "#1a1a1a",
-            border: "solid  #7300ff"
+            border: "solid var(--gui-main-color)"
         },
     }).showToast();
     const canvas = new OffscreenCanvas(image.width, image.height);

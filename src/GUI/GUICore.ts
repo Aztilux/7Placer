@@ -45,6 +45,7 @@ export class MainGUI {
 
         // menu toggle
         const toggle_gui_button = $('<a href="#" title="Seven Opener" class="grey margin-top-button"><img src="https://infonutricional.tomatelavida.com.co/wp-content/uploads/2023/06/postobon_informacion_nutriconallogo-7up.png" alt="icon"></a>')
+        toggle_gui_button.css("border-color", "var(--gui-main-color)")
         $("#menu-buttons").append(toggle_gui_button)
         let toggle = false
         toggle_gui_button.on("click", () => {
@@ -103,7 +104,7 @@ export class Tab {
     }
 
     private _createTab(name: string, tab_image: string) {
-        this._tab_button =  $(`<div class="sideBarTab" id="tabButton_${name}"><img src="${tab_image}" class="sideBarTab"></div>`);
+        this._tab_button =  $(`<div class="sideBarTab" id="tabButton_${name}"><img src="${tab_image}" class="sideBarTab" draggable="false"></div>`);
         this._tab_button.on("click", () => {
             this._main_gui.switchTab(name)
         })
@@ -212,6 +213,16 @@ export class Submenu {
         })
         this._submenu_inside.append(selector)
         return selector
+    }
+
+    public createColor(label: string, default_color: string, onChange: (color: any) => void) {
+        const color_selector = $(`<input type="color" value="${default_color}" />`)
+        const container = $(`<div class="colorPicker"><div>${label}</div></div>`).append(color_selector)
+        color_selector.on("input", () => {
+            onChange(color_selector.val())
+        })
+        this._submenu_inside.append(container)
+        return color_selector
     }
 
     private _createSubmenu(name: string): void {

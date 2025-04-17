@@ -2,17 +2,24 @@ const workerCode = `
     self.onmessage = function (e) { // {array: {x: number, y: number, color: number}[], order: string}
         let array = e.data.array
         switch (e.data.order) {
+            case 'none':
+            break
+
             case 'rand':
             array.sort(() => Math.random() - 0.5);
+            break
 
             case 'colors':
             array.sort((a, b) => a.color - b.color);
+            break
 
             case 'vertical':
             array.sort((a, b) => a.x - b.x);
+            break
 
             case 'horizontal':
             array.sort((a, b) => a.y - b.y);
+            break
 
             default:
             case 'circle':
@@ -38,7 +45,7 @@ export default async function sort(array: {x: number, y: number, color: number}[
             duration: 100000,
             style: {
                 background: "#1a1a1a",
-                border: "solid #7300ff"
+                border: "solid var(--gui-main-color)"
             },
         }).showToast();
         const worker = new Worker(blobUrl);
