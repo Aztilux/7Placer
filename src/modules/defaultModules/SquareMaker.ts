@@ -1,7 +1,7 @@
 import Queue from "./Queue";
 import sort from "./Sorting";
 
-export function BotSquare(x1: number, y1: number, x2: number, y2: number, color: number) {
+export async function BotSquare(x1: number, y1: number, x2: number, y2: number, color: number) {
     if (!x1 || !y1 || !x2 || !y2 || !color) return
     const seven = window.seven;
     var result: {x: number, y: number, color: number}[] = []
@@ -13,8 +13,15 @@ export function BotSquare(x1: number, y1: number, x2: number, y2: number, color:
         result.push({ x, y, color });
       }
     }
-    result = sort(result, seven.order)
+    result = await sort(result, seven.order)
     result.forEach((pixel) => {
       Queue.add(pixel.x, pixel.y, pixel.color, true)
     })
+    Toastify ({
+        text: `Square from ${x1}, ${y1} TO ${x2}, ${y2} with color ID ${color}`,
+        style: {
+            background: "#1a1a1a",
+            border: "solid rgb(255, 0, 0)"
+        },
+    }).showToast();
 }

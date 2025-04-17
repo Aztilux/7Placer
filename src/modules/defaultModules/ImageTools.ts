@@ -118,10 +118,11 @@ function imageData2array(imageData: ImageData, thread_amount: number, palette: [
 
 export async function ImageToPixels(image: ImageBitmap, dither?: string, palette?: [r: number, g: number, b: number][]) { // dither options: FloydSteinberg, FalseFloydSteinberg, Stucki, Atkinson, Jarvis, Burkes, Sierra, TwoSierra, SierraLite
     const processing_toast = Toastify ({
-        text: `Processing image`,
+        text: `Processing image...`,
+        duration: 100000,
         style: {
             background: "#1a1a1a",
-            border: "solid rgb(0, 255, 81)"
+            border: "solid  #7300ff"
         },
     }).showToast();
     const canvas = new OffscreenCanvas(image.width, image.height);
@@ -133,7 +134,7 @@ export async function ImageToPixels(image: ImageBitmap, dither?: string, palette
         quant.sample(imageData);
         quant.reduce(imageData, 1, dither)
     }
-    const array = imageData2array(imageData, 2, palette || Canvas.instance.colors);
+    const array = await imageData2array(imageData, 2, palette || Canvas.instance.colors);
     processing_toast.hideToast();
     Toastify ({
         text: `Image processed!`,
@@ -149,8 +150,12 @@ export async function botImage(x: number, y: number, image: File) {
     if (!x || !y || !image) return;
     const seven = window.seven;
     const bitmap = await createImageBitmap(image);
-    const processed = await ImageToPixels(bitmap, window.seven.dither);
+    let processed = await ImageToPixels(bitmap, window.seven.dither);
     previewCanvasImage(x, y, image);
-    sort(processed, seven.order);
-    processed.forEach((pixel: { x: number; y: number; color: number; }) => Queue.add(pixel.x + x, pixel.y + y, pixel.color, true));
+    processed = await sort(processed, seven.order)
+    processed.forEach((pixel: { x: number; y: number; color: number; }) => {
+        pixel.x += x
+        pixel.y += y
+    });
+    Queue.bulkAdd(processed, true)
 }
