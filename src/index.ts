@@ -12,7 +12,7 @@ Object.defineProperty(window.console, 'log', {
   value: console.log
 });
 
-console.log('7Placer Loaded! Version:', packageInfo.version);
+console.log(`%c7Placer Loaded! Version: ${packageInfo.version}`, 'color: chartreuse; font-size: 60px; font-style: italic;');
 
 loadCss('https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css');
 
