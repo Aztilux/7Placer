@@ -6,6 +6,7 @@ import { MainGUI } from "./GUICore";
 $(function() {
     const GUI = MainGUI.instance;
     const TAB = GUI.createTab("Botting", "https://pngimg.com/d/android_logo_PNG5.png");
+    GUI.switchTab("Botting")
 
     const image_submenu = TAB.createSubmenu("Images");
     let current_image: File;
@@ -51,6 +52,9 @@ $(function() {
     const protecting_submenu = TAB.createSubmenu("Protecting");
     protecting_submenu.createToggle("Protect", false, (state) => {
         window.seven.protect = state;
+    });
+    protecting_submenu.createToggle("Agressive protection", false, (state) => {
+        window.seven.agressive_protection = state;
     });
 
     const square_submenu = TAB.createSubmenu("Squares");

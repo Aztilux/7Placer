@@ -10,7 +10,8 @@ interface Window {
             protect: boolean,
             tickspeed: number,
             order: string,
-            multi: Object
-            dither: string
+            multi: Object,
+            dither: string,
+            agressive_protection: boolean
         }
 }
