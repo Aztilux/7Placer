@@ -1,6 +1,6 @@
 
 # 7Placer
-Pixelplace.io websocket userscript written in TypeScript using trim21's webpack userscript template.
+Fully featured pixelplace.io bot userscript written in Typescript.
 ##### Are you a user? Install compiled version in greasyfork.
 https://greasyfork.org/en/scripts/498043-7placer
 
@@ -11,18 +11,20 @@ https://greasyfork.org/en/scripts/498043-7placer
 ## Features
 
 - Processing images into pixels.
+- Dithering images
+- Fully featured GUI
 - Connecting multiple accounts.
 - Custom tracker to visualize botting.
 - More...
 
-
+![7Placer GUI Preview](./gui_preview.png)
 
 ## Developers
 ```
 git clone https://github.com/Aztilux/7Placer
 ```
 
-Install all requirements. 
+Install all requirements.
 #### development
 the script is in src, change metadata in config.
 ```
@@ -42,7 +44,7 @@ npm run build
 
 Contributions are very welcome. For other info or speaking with me just join my discord.
 https://discord.gg/svE9kRJ6kr or add me @azti.
-###### Documentation will come soon™ 
+###### Documentation will come soon™
 
 ## Credits
 - Azti - main development
@@ -51,4 +53,5 @@ https://discord.gg/svE9kRJ6kr or add me @azti.
 - @0vc4 - PPClient's drop area style
 - @Symmetry - Fixed ping.alive
 - @Turuslan - Hacktimer
+- @apvarun - toastify-js
 
