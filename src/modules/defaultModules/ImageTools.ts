@@ -2,8 +2,6 @@ import Canvas from '../../canvas/Canvas';
 import '../../variables';
 import Queue from './Queue';
 import sort from './Sorting';
-var DitherJS = require('ditherjs');
-var ditherjs = new DitherJS();
 
 export function hex2rgb(hex: string): [r: number, g: number, b: number] {
   const r = parseInt(hex.slice(1, 3), 16);
@@ -43,12 +41,17 @@ function previewCanvasImage (x: number, y: number, image: File) {
     img.src = URL.createObjectURL(image);
 }
 
-export async function ImageToPixels(image: ImageBitmap) {
+export async function ImageToPixels(image: ImageBitmap, dither?: string) { // dither options: FloydSteinberg, FalseFloydSteinberg, Stucki, Atkinson, Jarvis, Burkes, Sierra, TwoSierra, SierraLite
     const result = [];
     const canvas = new OffscreenCanvas(image.width, image.height);
     const ctx = canvas.getContext('2d');
     ctx.drawImage(image, 0, 0, image.width, image.height);
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    if (dither) {
+        const quant = new RgbQuant({palette: Canvas.instance.colors})
+        quant.sample(imageData);
+        quant.reduce(imageData, 1, dither)
+    }
     const pixelData = imageData.data;
 
     for (let y = 0; y < canvas.height; y++) {
@@ -73,7 +76,7 @@ export async function botImage(x: number, y: number, image: File) {
     if (!x || !y || !image) return;
     const seven = window.seven;
     const bitmap = await createImageBitmap(image);
-    const processed = await ImageToPixels(bitmap);
+    const processed = await ImageToPixels(bitmap, window.seven.dither);
     previewCanvasImage(x, y, image);
     sort(processed, seven.order);
     processed.forEach((pixel: { x: number; y: number; color: number; }) => Queue.add(pixel.x + x, pixel.y + y, pixel.color, true));

@@ -1,4 +1,5 @@
-declare var Toastify: any;
+declare const Toastify: any;
+declare const RgbQuant: any;
 
 interface Window {
         seven: {
@@ -10,5 +11,6 @@ interface Window {
             tickspeed: number,
             order: string,
             multi: Object
+            dither: string
         }
 }

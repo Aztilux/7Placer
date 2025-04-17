@@ -8,6 +8,7 @@ window.seven = {
     protect: false,
     tickspeed: 1000,
     order: 'fromCenter',
-    multi: cmd.public_commands
+    multi: cmd.public_commands,
+    dither: null
 }
 
