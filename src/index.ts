@@ -15,9 +15,13 @@ Object.defineProperty(window.console, 'log', {
 console.log('7Placer Loaded! Version:', packageInfo.version);
 
 loadCss('https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css');
-window.onload = () => {
-    Toastify ({
-        text: '7Placer Loaded!',
-    }).showToast();
-    Canvas.instance
-}
+
+const intervalId = setInterval(() => {
+    if (document.getElementById('canvas')) {
+        clearInterval(intervalId);
+        Toastify ({
+            text: '7Placer Loaded!',
+        }).showToast();
+        Canvas.instance
+    }
+}, 100);
