@@ -8,7 +8,7 @@ export class Canvas {
     private _isProcessed: boolean
     private _ID: number
     private _canvasArray: any[]
-    private _colors: {r: number, g: number, b: number}[]
+    private _colors: [r: number, g: number, b: number][]
 
     private constructor() {
         this._ID = this.ParseID()
@@ -86,7 +86,7 @@ export class Canvas {
         });
         unsorted_array.sort((a, b) => { return a.id-b.id })
 
-        let result: {r: number, g: number, b: number}[] = []
+        let result: [r: number, g: number, b: number][] = []
         unsorted_array.forEach((colorobj) => {
             result.push(hex2rgb(colorobj.color))
         })

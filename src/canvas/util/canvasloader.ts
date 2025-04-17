@@ -60,7 +60,7 @@ export async function processColors() {
             const g = pixelData[pixelIndex + 1];
             const b = pixelData[pixelIndex + 2];
             const colorIndex = canvas.colors.findIndex(color =>
-              color.r === r && color.g === g && color.b === b
+              color[0] === r && color[1] === g && color[2] === b
             );
             CanvasArray[x][y] = colorIndex;
         }
