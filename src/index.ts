@@ -24,6 +24,17 @@ const intervalId = setInterval(() => {
             style: {
                 background: "#1a1a1a",
                 border: "solid #7300ff"
+            },
+            callback: () => {
+                Toastify ({
+                    text: `Click me to join the discord.`,
+                    destination: "https://discord.gg/3fXfQp7Rms",
+                    newWindow: true,
+                    style: {
+                        background: "#1a1a1a",
+                        border: "solid #7300ff"
+                    },
+                }).showToast();
             }
         }).showToast();
         Canvas.instance

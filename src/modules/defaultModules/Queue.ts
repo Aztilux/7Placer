@@ -30,7 +30,18 @@
             const seven = window.seven
             const canvas = Canvas.instance
             const protector = new Protector
-            if (!canvas.isProcessed) { console.log('[7p] Error starting queue: Canvas has not been processed yet.'); Queue.stop(); return }
+            if (!canvas.isProcessed) {
+                Toastify ({
+                    text: `Canvas has not been processed yet.`,
+                    style: {
+                        background: "#1a1a1a",
+                        border: "solid rgb(255, 0, 0)"
+                    },
+                }).showToast();
+                console.log('[7p] Error starting queue: Canvas has not been processed yet.');
+                Queue.stop();
+                return
+            }
             seven.inprogress = true
             let tick = 0
             while (seven.inprogress) {

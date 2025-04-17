@@ -1,19 +1,20 @@
 import Canvas from "../Canvas";
 
 export async function processWater(): Promise<number[][]> {
+    const pixelplace_canvas = document.getElementById('canvas') as HTMLCanvasElement;
+    var waterArray = Array.from({ length: pixelplace_canvas.width }, () => Array.from({ length: pixelplace_canvas.height }, () => 1));
+
     var image = await fetch('https://pixelplace.io/canvas/' + Canvas.instance.ID + 'p.png?t200000=' + Date.now());
     if (!image.ok) {
-        const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-        var waterArray = Array.from({ length: canvas.width }, () => Array.from({ length: canvas.height }, () => 1));
         return waterArray
     }
     const blob = await image.blob();
     const bitmap = await createImageBitmap(blob);
     const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
-    var waterArray = Array.from({ length: canvas.width }, () => Array.from({ length: canvas.height }, () => 1));
     const context = canvas.getContext('2d', { "willReadFrequently": true });
     context.drawImage(bitmap, 0, 0, bitmap.width, bitmap.height);
     const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+
     return new Promise((resolve) => {
         if (bitmap.width == 1 && bitmap.height == 1) { // custom canvases ?
             resolve(waterArray);
@@ -36,16 +37,15 @@ export async function processWater(): Promise<number[][]> {
 
 export async function processColors() {
     const startTotalTime = performance.now();
-
-    const waterArray: number[][] = await processWater();
-
     const canvas = Canvas.instance
     const startColorsTime = performance.now();
     const pixelplace_canvas = document.getElementById('canvas') as HTMLCanvasElement;
     const ctx = pixelplace_canvas.getContext('2d', { "willReadFrequently": true });
     const imageData = ctx.getImageData(0, 0, pixelplace_canvas.width, pixelplace_canvas.height);
     const pixelData = imageData.data;
+    const waterArray: number[][] = await processWater();
     var CanvasArray = Array.from({ length: pixelplace_canvas.width }, () => Array.from({ length: pixelplace_canvas.height }, () => 1));
+
     if (waterArray.length > 1) {
         CanvasArray = waterArray;
     }
@@ -67,8 +67,17 @@ export async function processColors() {
     }
     console.log(CanvasArray);
     Canvas.instance.canvasArray = CanvasArray;
+
+    // Logging
     const finalTotalTime = performance.now() - startTotalTime;
     const finalColorsTime = performance.now() - startColorsTime
     const finalWaterTime = startColorsTime - startTotalTime;
     console.log(`[7p PROCESSING] Total Time: ${finalTotalTime}ms, Colors Time: ${finalColorsTime}ms, Water Time: ${finalWaterTime}ms`);
+    Toastify ({
+        text: `Canvas loaded!`,
+        style: {
+            background: "#1a1a1a",
+            border: "solid rgb(0, 255, 81)"
+        },
+    }).showToast();
 }
