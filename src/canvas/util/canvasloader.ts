@@ -36,16 +36,18 @@ export async function processWater(): Promise<number[][]> {
 }
 
 export async function processColors() {
-    const startTotalTime = performance.now();
+    const start_total_time = performance.now();
     const canvas = Canvas.instance
-    const startColorsTime = performance.now();
     const pixelplace_canvas = document.getElementById('canvas') as HTMLCanvasElement;
     const ctx = pixelplace_canvas.getContext('2d', { "willReadFrequently": true });
     const imageData = ctx.getImageData(0, 0, pixelplace_canvas.width, pixelplace_canvas.height);
     const pixelData = imageData.data;
+    const start_water_time = performance.now();
     const waterArray: number[][] = await processWater();
+    const final_water_time = performance.now() - start_water_time;
     var CanvasArray = Array.from({ length: pixelplace_canvas.width }, () => Array.from({ length: pixelplace_canvas.height }, () => 1));
 
+    const start_color_time = performance.now()
     if (waterArray.length > 1) {
         CanvasArray = waterArray;
     }
@@ -69,10 +71,9 @@ export async function processColors() {
     Canvas.instance.canvasArray = CanvasArray;
 
     // Logging
-    const finalTotalTime = performance.now() - startTotalTime;
-    const finalColorsTime = performance.now() - startColorsTime
-    const finalWaterTime = startColorsTime - startTotalTime;
-    console.log(`[7p PROCESSING] Total Time: ${finalTotalTime}ms, Colors Time: ${finalColorsTime}ms, Water Time: ${finalWaterTime}ms`);
+    const final_total_time = performance.now() - start_total_time;
+    const final_colors_time = performance.now() - start_color_time
+    console.log(`[7p PROCESSING] Total Time: ${final_total_time}ms, Colors Time: ${final_colors_time}ms, Water Time: ${final_water_time}ms`);
     Toastify ({
         text: `Canvas loaded!`,
         style: {
