@@ -21,7 +21,7 @@ export async function BotSquare(x1: number, y1: number, x2: number, y2: number, 
         text: `Square from ${x1}, ${y1} TO ${x2}, ${y2} with color ID ${color}`,
         style: {
             background: "#1a1a1a",
-            border: "solid rgb(255, 0, 0)"
+            border: "solid var(--gui-main-color)"
         },
     }).showToast();
 }
