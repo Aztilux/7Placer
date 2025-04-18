@@ -10,23 +10,22 @@ import getPalive from "./util/palive";
 import { deleteAccount } from "../auth/util/commands";
 export class Bot {
 
-    public username: string
-    private _ws: WebSocket
-    public handler: MessageHandler
+    public username: string;
+    private _ws: WebSocket;
+    public handler: MessageHandler;
     public tracker: JQuery<HTMLElement>;
-    private trackeriters: number = 0
-    public paliveServerTime: number
-    public lastplace: number
+    private trackeriters: number = 0;
+    public paliveServerTime: number;
+    public lastplace: number = performance.now();
 
     constructor(websocket: WebSocket) {
-        this._ws = websocket
-        this.lastplace = Date.now();
-        this.handler = new MessageHandler(this, this.ws)
-    }
+        this._ws = websocket;
+        this.handler = new MessageHandler(this, this.ws);
+    };
 
     public emit(event: any, params: any) {
-        this.ws.send(`42["${event}",${params}]`)
-    }
+        this.ws.send(`42["${event}",${params}]`);
+    };
 
     public kill() {
         const seven = window.seven;
@@ -39,82 +38,86 @@ export class Bot {
     public async placePixel(x: number, y: number, color: number, client: boolean = false, tracker: boolean = true): Promise<boolean> {
         const canvas = Canvas.instance;
         const canvascolor = canvas.getColor(x, y);
-        const seven = window.seven
+        const seven = window.seven;
 
         if (canvascolor == color || canvascolor == 200) {
             return true;
-        }
+        };
 
-        while (Date.now() - this.lastplace < seven.pixelspeed) {
+        while (performance.now() - this.lastplace < seven.pixelspeed) {
             await new Promise(resolve => setTimeout(resolve, 0));
-        }
+        };
 
+        console.log(performance.now() - this.lastplace)
         this.emit('p', `[${x},${y},${color},1]`);
-        this.lastplace = Date.now();
+        this.lastplace = performance.now();
 
         if (tracker && this.trackeriters >= 6) {
             $(this.tracker).css({ top: y, left: x, display: 'block' });
             this.trackeriters = 0;
-        }
+        };
 
         this.trackeriters += 1;
         return true;
-    }
+    };
 
     public static async findAvailableBot(): Promise<Bot> {
-        const seven = window.seven
-        const bots = (seven.bots as Map<string, Bot>)
-        var tick = 0
+        const seven = window.seven;
+        const bots = (seven.bots as Map<string, Bot>);
+        var tick = 0;
         while (true) {
             for (const [_, bot] of bots) {
                 if (Date.now() - bot.lastplace >= seven.pixelspeed) {
                     // console.log(`[7p] found available bot: ${bot.username}, ${ Date.now() - bot.lastplace }`);
                     return bot;
-                }
+                };
             };
 
-            tick += 1
-            if (tick == seven.tickspeed) { tick = 0; await new Promise(resolve => setTimeout(resolve, 0)); }
+            tick += 1;
+            if (tick == seven.tickspeed) {
+                tick = 0;
+                await new Promise(resolve => setTimeout(resolve, 0));
+            };
         };
 
     }
 
 
     public createTracker() {
-        const tracker = $('<div class="track" id="bottracker">').text(`[7P] ${this.username}`).css(trackercss)
+        const tracker = $('<div class="track" id="bottracker">').text(`[7P] ${this.username}`).css(trackercss);
         $('#canvas').ready(function() {
             // console.log(`[7p] created tracker: ${name}`)
-            $('#painting-move').append(tracker)
+            $('#painting-move').append(tracker);
         });
-        return tracker
-    }
+        return tracker;
+    };
 
     public get ws(): WebSocket {
-        return this._ws
-    }
+        return this._ws;
+    };
 }
 
 export class WSBot extends Bot {
-    private _auth: Auth
+    private _auth: Auth;
     public username: string;
-    public generalinfo: any
+    public generalinfo: any;
 
     constructor(auth: Auth, username: string, websocket: WebSocket) {
-        super(websocket)
+        super(websocket);
         this._auth = auth;
-        this.username = username
-        this.startBot()
+        this.username = username;
+        this.startBot();
     }
 
     private async startBot() {
-        this.generalinfo = await getPainting(this.auth.authId, this.auth.authKey, this.auth.authToken)
-        this.tracker = this.createTracker()
-        this.internalListeners()
+        this.generalinfo = await getPainting(this.auth.authId, this.auth.authKey, this.auth.authToken);
+        this.tracker = this.createTracker();
+        this.internalListeners();
     }
 
     public get auth(): Auth {
-        return this._auth
-    }
+        return this._auth;
+    };
 
     private internalListeners() {
         this.handler.on('server_time', (data) => {
@@ -128,34 +131,34 @@ export class WSBot extends Bot {
         this.handler.on('throw.error', (data) => {
                 if (data[1] == 49) {
                 console.log(`[7p] [Bot ${this.username}] Error (${data[1]}): This auth is not valid! Deleting account from saved accounts...`);
-                deleteAccount(this.username)
-                this.kill()
+                deleteAccount(this.username);
+                this.kill();
                 return;
                 } else if (data[1] == 16) {
-                this.kill()
-                }
+                this.kill();
+                };
                 console.log(`[7p] [Bot ${this.username}] Pixelplace WS error: ${data[1]}`);
         })
         this.handler.on('canvas', () => {
-            const seven = window.seven
-            console.log(`[7p] Succesfully connected to bot ${this.username}`)
+            const seven = window.seven;
+            console.log(`[7p] Succesfully connected to bot ${this.username}`);
             seven.bots.set(this.username, this);
         })
         this.handler.on(2, () => {
-            this.ws.send('3')
+            this.ws.send('3');
         })
         this.handler.on('start', () => {
-            this.ws.send('40')
+            this.ws.send('40');
         })
         this.handler.on('init', () => {
-            this.emit('init', `{"authKey":"${this.auth.authKey}","authToken":"${this.auth.authToken}","authId":"${this.auth.authId}","boardId":${Canvas.instance.ID}}`)
+            this.emit('init', `{"authKey":"${this.auth.authKey}","authToken":"${this.auth.authToken}","authId":"${this.auth.authId}","boardId":${Canvas.instance.ID}}`);
         })
     }
 }
 
 export class Client extends Bot {
     public username: string;
-    public static instance: Client
+    public static instance: Client;
 
     constructor(websocket: WebSocket) {
         super(websocket);
@@ -168,36 +171,36 @@ export class Client extends Bot {
     };
 
     private start() {
-        const seven = window.seven
+        const seven = window.seven;
         this.username = 'Client';
         this.tracker = this.createTracker();
         this.internalListeners();
-        seven.bots.set(this.username, this)
-    }
+        seven.bots.set(this.username, this);
+    };
 
     private internalListeners() {
         // Bot canvas array updater
         this.handler.on('p', (data) => {
             for (const pixel of data[1]) {
-                const canvas = Canvas.instance
-                const x = pixel[0]
-                const y = pixel[1]
-                const color = pixel[2]
-                const id = pixel[4]
-                canvas.updatePixel(x, y, color)
-                Protector.checkPixel(x, y, color)
+                const canvas = Canvas.instance;
+                const x = pixel[0];
+                const y = pixel[1];
+                const color = pixel[2];
+                const id = pixel[4];
+                canvas.updatePixel(x, y, color);
+                Protector.checkPixel(x, y, color);
             }
         })
         // Rewrites some pixels after loading (I think because of cache lag)
         this.handler.on("canvas", (data) => {
             for (const pixel of data[1]) {
-                const canvas = Canvas.instance
-                const x = pixel[0]
-                const y = pixel[1]
-                const color = pixel[2]
-                canvas.updatePixel(x, y, color)
-            }
-        })
-    }
+                const canvas = Canvas.instance;
+                const x = pixel[0];
+                const y = pixel[1];
+                const color = pixel[2];
+                canvas.updatePixel(x, y, color);
+            };
+        });
+    };
 
-}
+};
