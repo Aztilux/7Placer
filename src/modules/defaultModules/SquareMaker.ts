@@ -2,7 +2,7 @@ import Queue from "./Queue";
 import sort from "./Sorting";
 
 export async function BotSquare(x1: number, y1: number, x2: number, y2: number, color: number) {
-    if (!x1 || !y1 || !x2 || !y2 || !color) return
+    if (!x1 || !y1 || !x2 || !y2 || color === undefined) return
     const seven = window.seven;
     var result: {x: number, y: number, color: number}[] = []
     if (x2 < x1) [x1, x2] = [x2, x1]
