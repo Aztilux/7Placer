@@ -9,7 +9,7 @@ $(function() {
     bot_settings.createText("pixel speed default is 21")
     const pixelspeed_input = bot_settings.createInput(`pixel speed`, "number", (number) => {
         number = parseInt(number)
-        if (number < 16) number = 16
+        if (number < 16.5) number = 16.5
         window.seven.pixelspeed = number
     })
 
