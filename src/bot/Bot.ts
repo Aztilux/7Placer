@@ -49,7 +49,8 @@ export class Bot {
         };
 
         console.log(performance.now() - this.lastplace)
-        this.emit('p', `[${pixel.x},${pixel.y},${pixel.color},1]`);
+        const pixel_param = this.determinePixelType(pixel)
+        this.emit('p', pixel_param);
         this.lastplace = performance.now();
 
         if (tracker && this.trackeriters >= 6) {
@@ -59,6 +60,20 @@ export class Bot {
 
         this.trackeriters += 1;
         return true;
+    };
+
+    private determinePixelType(pixel: Pixel, type?: string): string {
+        const types = {
+            default: `[${pixel.x},${pixel.y},${pixel.color},1]`,
+            protect: `[${pixel.x},${pixel.y},${pixel.color},1,1]`,
+            seaprotect: `[${pixel.x},${pixel.y},-100,1,1]`,
+            unprotect: `[${pixel.x},${pixel.y},${pixel.color},1,2]`,
+        };
+        if (!type) type = window.seven.pixel_type;
+        if (!(type in types)) {
+            throw new Error(type + " is not a valid pixel type.");
+        }
+        return types[type as keyof typeof types];
     };
 
     public static async findAvailableBot(): Promise<Bot> {

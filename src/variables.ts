@@ -11,5 +11,6 @@ window.seven = {
     multi: cmd.public_commands,
     dither: null,
     agressive_protection: false,
+    pixel_type: "default",
 }
 

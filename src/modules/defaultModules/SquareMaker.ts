@@ -15,7 +15,7 @@ export async function BotSquare(x1: number, y1: number, x2: number, y2: number, 
     }
     result = await sort(result, seven.order)
     result.forEach((pixel) => {
-      Queue.add(pixel.x, pixel.y, pixel.color, true)
+      Queue.add(pixel, true)
     })
     Toastify ({
         text: `Square from ${x1}, ${y1} TO ${x2}, ${y2} with color ID ${color}`,
