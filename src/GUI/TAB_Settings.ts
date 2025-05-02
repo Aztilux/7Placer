@@ -24,6 +24,17 @@ $(function() {
     bot_settings.createSelect('-- select sorting --', sort_options, value => {
         window.seven.order = value
     })
+
+    bot_settings.createText('Only works in canvas your admin')
+    const pixel_type_options = [
+        {label: "default", value: "default"},
+        {label: "protect", value: "protect"},
+        {label: "sea protect", value: "seaprotect"},
+        {label: "unprotect", value: "unprotect"},
+    ]
+    bot_settings.createSelect('-- select tool --', pixel_type_options, value => {
+        window.seven.pixel_type = value
+    })
     bot_settings.createColor("GUI Color Picker", "", color => {
         $(":root").css("--gui-main-color", color)
     })
