@@ -134,7 +134,7 @@ export async function ImageToPixels(image: ImageBitmap, dither?: string, palette
         quant.sample(imageData);
         quant.reduce(imageData, 1, dither)
     }
-    const array = await imageData2array(imageData, 2, palette || Canvas.instance.colors);
+    const array = await imageData2array(imageData, 1, palette || Canvas.instance.colors);
     processing_toast.hideToast();
     Toastify ({
         text: `Image processed!`,
