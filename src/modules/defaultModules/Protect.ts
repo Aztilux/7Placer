@@ -30,7 +30,7 @@ export default class Protector {
 
         Protector.protected.forEach((pixel) => {
             if(isInsideProtected(pixel) && !isSameColor(pixel)) {
-                Queue.add(x, y, pixel.color, false, window.seven.agressive_protection)
+                Queue.add(pixel, false, window.seven.agressive_protection)
             }
         })
     }

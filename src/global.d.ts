@@ -1,6 +1,11 @@
 declare const Toastify: any;
 declare const RgbQuant: any;
 
+interface Pixel {
+    x: number,
+    y: number,
+    color: number
+}
 interface Window {
         seven: {
             bots: Map<string, any>,
@@ -12,6 +17,7 @@ interface Window {
             order: string,
             multi: Object,
             dither: string,
-            agressive_protection: boolean
+            agressive_protection: boolean,
+            pixel_type: string,
         }
 }

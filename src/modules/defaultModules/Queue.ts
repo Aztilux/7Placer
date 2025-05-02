@@ -10,9 +10,8 @@
             Queue.performance = performance.now()
         }
 
-        public static add(x: number, y: number, color: number, protection: boolean, atStart: boolean = false, client: boolean = false) {
+        public static add(pixel: Pixel, protection: boolean, atStart: boolean = false, client: boolean = false) {
             const seven = window.seven
-            const pixel = { x: x, y: y, color: color, protected: protection, client: client };
             if (atStart) seven.queue.unshift(pixel);
             else {
                 seven.queue.push(pixel);
@@ -20,7 +19,7 @@
             if (seven.queue.length == 1) Queue.start();
         };
 
-        public static bulkAdd(pixel_array: {x: number, y: number, color: number}[], protection: boolean, atStart: boolean = false, client: boolean = false) {
+        public static bulkAdd(pixel_array: Pixel[], protection: boolean, atStart: boolean = false, client: boolean = false) {
             const seven = window.seven
             pixel_array.forEach(pixel => {
                 (pixel as any).protected = protection;
@@ -81,7 +80,7 @@
                 };
 
 
-                await bot.placePixel(pixel.x, pixel.y, pixel.color);
+                await bot.placePixel(pixel);
 
                 var indexOfRemoval = seven.queue.indexOf(pixel);
                 seven.queue.splice(indexOfRemoval, 1);

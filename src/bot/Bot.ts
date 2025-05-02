@@ -35,12 +35,12 @@ export class Bot {
         };
     };
 
-    public async placePixel(x: number, y: number, color: number, client: boolean = false, tracker: boolean = true): Promise<boolean> {
+    public async placePixel(pixel: Pixel, client: boolean = false, tracker: boolean = true): Promise<boolean> {
         const canvas = Canvas.instance;
-        const canvascolor = canvas.getColor(x, y);
+        const canvascolor = canvas.getColor(pixel.x, pixel.y);
         const seven = window.seven;
 
-        if (canvascolor == color || canvascolor == 200) {
+        if (canvascolor == pixel.color || canvascolor == 200) {
             return true;
         };
 
@@ -49,11 +49,11 @@ export class Bot {
         };
 
         console.log(performance.now() - this.lastplace)
-        this.emit('p', `[${x},${y},${color},1]`);
+        this.emit('p', `[${pixel.x},${pixel.y},${pixel.color},1]`);
         this.lastplace = performance.now();
 
         if (tracker && this.trackeriters >= 6) {
-            $(this.tracker).css({ top: y, left: x, display: 'block' });
+            $(this.tracker).css({ top: pixel.y, left: pixel.x, display: 'block' });
             this.trackeriters = 0;
         };
 
