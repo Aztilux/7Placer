@@ -39,7 +39,7 @@ export class Bot {
         const canvas = Canvas.instance;
         const seven = window.seven;
 
-        if ((canvas.isSameColor(pixel) || canvas.isProtected(pixel))) {
+        if (window.seven.pixel_type == "default" && (canvas.isSameColor(pixel) || canvas.isProtected(pixel))) {
             return true;
         };
 
