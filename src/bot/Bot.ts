@@ -35,12 +35,11 @@ export class Bot {
         };
     };
 
-    public async placePixel(pixel: Pixel, client: boolean = false, tracker: boolean = true): Promise<boolean> {
+    public async placePixel(pixel: Pixel, tracker: boolean = true): Promise<boolean> {
         const canvas = Canvas.instance;
-        const canvascolor = canvas.getColor(pixel.x, pixel.y);
         const seven = window.seven;
 
-        if (canvascolor == pixel.color || canvascolor == 200) {
+        if ((canvas.isSameColor(pixel) || canvas.isProtected(pixel))) {
             return true;
         };
 
