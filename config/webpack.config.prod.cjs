@@ -9,7 +9,7 @@ const webpackConfig = require("./webpack.config.base.cjs");
 const cfg = merge(webpackConfig, {
   mode: "production",
   output: {
-    filename: "index.prod.user.js",
+    filename: "script.user.js",
   },
   optimization: {
     // if you need minimize, you need to config minimizer to keep all comments
