@@ -82,41 +82,8 @@ const workerCode = `
 const blob = new Blob([workerCode], { type: 'application/javascript' });
 const blobUrl = URL.createObjectURL(blob);
 
-function imageData2array(imageData: ImageData, thread_amount: number, palette: [r: number, g: number, b: number][]) {
+export async function imageData2array(imageData: ImageData, thread_amount: number, palette: [r: number, g: number, b: number][], dither?: string): Promise<{ x: number; y: number; color: number; }[]> { // dither options: FloydSteinberg, FalseFloydSteinberg, Stucki, Atkinson, Jarvis, Burkes, Sierra, TwoSierra, SierraLite
     const t0 = performance.now();
-    return new Promise(resolve => {
-        const workers_global_result: {x: number, y: number, color: number}[] = [];
-        let workers = 0
-        let workers_done = 0
-        for (let divison_y = 0; divison_y < imageData.height; divison_y += (imageData.height / thread_amount)) {
-            const y_division_last = divison_y + (imageData.height / thread_amount)
-            for (let division_x = 0; division_x < imageData.width; division_x += (imageData.width / thread_amount)) {
-                const x_division_last = division_x + (imageData.width / thread_amount)
-                const worker = new Worker(blobUrl);
-                workers += 1
-                worker.postMessage({imageData: imageData, palette: palette, y_division_last: y_division_last, x_division_last: x_division_last});
-                worker.onmessage = function (e) {
-                    const worker_pixels = e.data
-                    worker.terminate();
-                    workers_done += 1
-                    console.log(workers_done)
-                    worker_pixels.forEach((pixel: {x: number, y: number, color: number}) => {
-                        workers_global_result.push(pixel)
-                    });
-                    if (workers == workers_done) {
-                        console.log(`ImageData processed in ${performance.now() - t0} ms`)
-                        resolve(workers_global_result)
-                    }
-                }
-            }
-        }
-    })
-    .then((final_result: {x: number, y: number, color: number}[]) => {
-        return final_result
-    })
-}
-
-export async function ImageToPixels(image: ImageBitmap, dither?: string, palette?: [r: number, g: number, b: number][]) { // dither options: FloydSteinberg, FalseFloydSteinberg, Stucki, Atkinson, Jarvis, Burkes, Sierra, TwoSierra, SierraLite
     const processing_toast = Toastify ({
         text: `Processing image...`,
         duration: 100000,
@@ -125,16 +92,38 @@ export async function ImageToPixels(image: ImageBitmap, dither?: string, palette
             border: "solid var(--gui-main-color)"
         },
     }).showToast();
-    const canvas = new OffscreenCanvas(image.width, image.height);
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(image, 0, 0, image.width, image.height);
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     if (dither) {
         const quant = new RgbQuant({palette: Canvas.instance.colors})
         quant.sample(imageData);
         quant.reduce(imageData, 1, dither)
     }
-    const array = await imageData2array(imageData, 1, palette || Canvas.instance.colors);
+    const final_result = await new Promise<{ x: number; y: number; color: number; }[]>(resolve => {
+        const workers_global_result: { x: number; y: number; color: number; }[] = [];
+        let workers = 0;
+        let workers_done = 0;
+        for (let divison_y = 0; divison_y < imageData.height; divison_y += (imageData.height / thread_amount)) {
+            const y_division_last = divison_y + (imageData.height / thread_amount);
+            for (let division_x = 0; division_x < imageData.width; division_x += (imageData.width / thread_amount)) {
+                const x_division_last = division_x + (imageData.width / thread_amount);
+                const worker = new Worker(blobUrl);
+                workers += 1;
+                worker.postMessage({ imageData: imageData, palette: palette, y_division_last: y_division_last, x_division_last: x_division_last });
+                worker.onmessage = function (e) {
+                    const worker_pixels = e.data;
+                    worker.terminate();
+                    workers_done += 1;
+                    console.log(workers_done);
+                    worker_pixels.forEach((pixel: { x: number; y: number; color: number; }) => {
+                        workers_global_result.push(pixel);
+                    });
+                    if (workers == workers_done) {
+                        console.log(`ImageData processed in ${performance.now() - t0} ms`);
+                        resolve(workers_global_result);
+                    }
+                };
+            }
+        }
+    });
     processing_toast.hideToast();
     Toastify ({
         text: `Image processed!`,
@@ -143,14 +132,23 @@ export async function ImageToPixels(image: ImageBitmap, dither?: string, palette
             border: "solid rgb(0, 255, 81)"
         },
     }).showToast();
-    return array
+    return final_result;
+}
+
+export async function imageBitmap2imageData(image: ImageBitmap) {
+    const canvas = new OffscreenCanvas(image.width, image.height);
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(image, 0, 0, image.width, image.height);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    return imageData
 }
 
 export async function botImage(x: number, y: number, image: File) {
     if (x == undefined || y == undefined || !image) return;
     const seven = window.seven;
     const bitmap = await createImageBitmap(image);
-    let processed = await ImageToPixels(bitmap, window.seven.dither);
+    let image_data = await imageBitmap2imageData(bitmap);
+    let processed = await imageData2array(image_data, 1, Canvas.instance.colors, window.seven.dither)
     previewCanvasImage(x, y, image);
     processed = await sort(processed, seven.order)
     processed.forEach((pixel: { x: number; y: number; color: number; }) => {
