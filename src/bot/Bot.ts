@@ -47,7 +47,7 @@ export class Bot {
             await new Promise(resolve => setTimeout(resolve, 0));
         };
 
-        console.log(performance.now() - this.lastplace)
+        // console.log(performance.now() - this.lastplace)
         const pixel_param = this.determinePixelType(pixel)
         this.emit('p', pixel_param);
         this.lastplace = performance.now();
