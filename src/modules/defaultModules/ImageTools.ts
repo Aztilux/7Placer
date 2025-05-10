@@ -147,7 +147,7 @@ export async function ImageToPixels(image: ImageBitmap, dither?: string, palette
 }
 
 export async function botImage(x: number, y: number, image: File) {
-    if (!x || !y || !image) return;
+    if (x == undefined || y == undefined || !image) return;
     const seven = window.seven;
     const bitmap = await createImageBitmap(image);
     let processed = await ImageToPixels(bitmap, window.seven.dither);
