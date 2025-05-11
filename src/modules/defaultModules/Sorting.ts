@@ -21,6 +21,12 @@ const workerCode = `
             array.sort((a, b) => a.y - b.y);
             break
 
+            case 'topleft':
+            array.sort((a, b) => {
+                return (a.x + a.y) - (b.x + b.y);
+            });
+            break
+
             default:
             case 'circle':
             const CX = Math.floor((array[0].x + array[array.length - 1].x) / 2);
