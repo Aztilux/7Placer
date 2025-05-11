@@ -27,6 +27,16 @@ const workerCode = `
             });
             break
 
+            case 'grid':
+            array.sort((a, b) => {
+                if (b.x % 2 == 0 && b.y % 2 == 0) {
+                    return -1
+                } else {
+                    return 1
+                }
+            })
+            break
+
             default:
             case 'circle':
             const CX = Math.floor((array[0].x + array[array.length - 1].x) / 2);
