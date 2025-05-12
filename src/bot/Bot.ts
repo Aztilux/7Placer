@@ -67,6 +67,7 @@ export class Bot {
             protect: `[${pixel.x},${pixel.y},${pixel.color},1,1]`,
             seaprotect: `[${pixel.x},${pixel.y},-100,1,1]`,
             unprotect: `[${pixel.x},${pixel.y},${pixel.color},1,2]`,
+            replace: `[${pixel.x}, ${pixel.y}, ${pixel.color}, 1, 3]`
         };
         if (!type) type = window.seven.pixel_type;
         if (!(type in types)) {

@@ -33,6 +33,7 @@ $(function() {
         {label: "protect", value: "protect"},
         {label: "sea protect", value: "seaprotect"},
         {label: "unprotect", value: "unprotect"},
+        {label: "replace", value: "replace"},
     ]
     bot_settings.createSelect('-- select tool --', pixel_type_options, value => {
         window.seven.pixel_type = value
