@@ -15,6 +15,8 @@ $(function() {
 
     const sort_options = [
         {label: "none", value: "none"},
+        {label: "grid", value: "grid"},
+        {label: "top left", value: "topleft"},
         {label: "random", value: "rand"},
         {label: "colors", value: "colors"},
         {label: "vertical", value: "vertical"},
