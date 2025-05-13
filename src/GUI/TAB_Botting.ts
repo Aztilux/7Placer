@@ -15,6 +15,33 @@ $(function() {
     image_submenu.createDrop("Drop Image", dropped_image => {
         current_image = dropped_image;
     });
+    image_submenu.createButton("Choose Image", () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.style.display = 'none';
+
+    document.body.appendChild(input);
+
+    input.addEventListener('change', function () {
+        const file = input.files[0];
+        if (!file) return;
+
+        const dropTarget = document.querySelector('.dropImage');
+
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+
+        const dragEnter = new DragEvent('dragenter', { dataTransfer: dataTransfer });
+        const dragOver = new DragEvent('dragover', { dataTransfer: dataTransfer });
+        const drop = new DragEvent('drop', { dataTransfer: dataTransfer });
+
+        dropTarget.dispatchEvent(dragEnter);
+        dropTarget.dispatchEvent(dragOver);
+        dropTarget.dispatchEvent(drop);
+    });
+    input.click();
+});
     image_submenu.createInput("X", "number", x_coord => {
         current_image_x = parseInt(x_coord);
     });
