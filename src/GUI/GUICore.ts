@@ -180,6 +180,28 @@ export class Submenu {
                 onFile(file);
             }
         });
+        drop_container.on("click", () => {
+            const input = $('<input type="file" accept="image/*" style="display:none">');
+            $("body").append(input);
+            input.on('change', function () {
+                const file = input.prop('files')[0];
+                if (!file) return;
+
+                const dropTarget = drop_container[0]
+
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+
+                const dragEnter = new DragEvent('dragenter', { dataTransfer: dataTransfer });
+                const dragOver = new DragEvent('dragover', { dataTransfer: dataTransfer });
+                const drop = new DragEvent('drop', { dataTransfer: dataTransfer });
+
+                dropTarget.dispatchEvent(dragEnter);
+                dropTarget.dispatchEvent(dragOver);
+                dropTarget.dispatchEvent(drop);
+            });
+            input.trigger("click");
+        })
         this._submenu_inside.append(drop_container);
         return drop_container
     }
