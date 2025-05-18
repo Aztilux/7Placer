@@ -58,6 +58,12 @@ export class Bot {
         };
 
         this.trackeriters += 1;
+
+        clearTimeout(this._trackerTimeout);
+        this._trackerTimeout = setTimeout(() => {
+            this.tracker?.hide();
+        }, 5000);
+
         return true;
     };
 
