@@ -14,8 +14,8 @@ $(document).on('keydown', function(event) {
           break
         case (66):
           [x, y, color] = getClientMouse();
-          $("#number_input_X").val(x)
-          $("#number_input_Y").val(y)
+          $("#number_input_X").val(x).trigger("input");
+          $("#number_input_Y").val(y).trigger("input");
           break;
         case 88:
           [x, y, color] = getClientMouse();
