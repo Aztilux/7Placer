@@ -17,6 +17,7 @@ export class Bot {
     private trackeriters: number = 0;
     public paliveServerTime: number;
     public lastplace: number = performance.now();
+    private _trackerTimeout: string | number | NodeJS.Timeout
 
     constructor(websocket: WebSocket) {
         this._ws = websocket;
